@@ -6,7 +6,7 @@ const FOOTER_COLUMNS = [
     links: [
       { label: "Culture indoor", href: "/categorie/culture-indoor" },
       { label: "Outdoor & hors-sol", href: "/categorie/outdoor" },
-      { label: "CBD / CBG", href: "/categorie/cbd" },
+      { label: "CBD / CBG", href: "/categorie/cbd-cbg" },
       { label: "Vinyles & pop culture", href: "/categorie/vinyles" },
     ],
   },

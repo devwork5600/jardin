@@ -8,7 +8,7 @@ const NAV_LINKS = [
   { label: "Accueil", href: "/" },
   { label: "Culture indoor", href: "/categorie/culture-indoor" },
   { label: "Outdoor", href: "/categorie/outdoor" },
-  { label: "CBD", href: "/categorie/cbd" },
+  { label: "CBD", href: "/categorie/cbd-cbg" },
   { label: "Vinyles", href: "/categorie/vinyles" },
 ];
 
