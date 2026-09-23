@@ -1,0 +1,194 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Brand {
+  id       String    @id @default(cuid())
+  name     String
+  slug     String    @unique
+  products Product[]
+
+  @@map("brand")
+}
+
+model Category {
+  id       String     @id @default(cuid())
+  name     String
+  slug     String     @unique
+  parentId String?
+  parent   Category?  @relation("CategoryTree", fields: [parentId], references: [id])
+  children Category[] @relation("CategoryTree")
+  products Product[]
+
+  @@map("category")
+}
+
+enum ProductStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+model Product {
+  id          String        @id @default(cuid())
+  name        String
+  slug        String        @unique
+  description String
+  conseil     String?
+  status      ProductStatus @default(DRAFT)
+  categoryId  String
+  brandId     String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  category        Category                @relation(fields: [categoryId], references: [id])
+  brand           Brand?                  @relation(fields: [brandId], references: [id])
+  images          ProductImage[]
+  characteristics ProductCharacteristic[]
+  variants        ProductVariant[]
+  favorites       Favorite[]
+
+  @@index([categoryId])
+  @@map("product")
+}
+
+model ProductImage {
+  id        String @id @default(cuid())
+  productId String
+  url       String
+  position  Int    @default(0)
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@map("product_image")
+}
+
+model ProductCharacteristic {
+  id        String @id @default(cuid())
+  productId String
+  label     String
+  value     String
+  position  Int    @default(0)
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@map("product_characteristic")
+}
+
+model ProductVariant {
+  id             String @id @default(cuid())
+  productId      String
+  sku            String @unique
+  label          String
+  priceCents     Int
+  compareAtCents Int?
+  stock          Int    @default(0)
+  position       Int    @default(0)
+
+  product    Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  orderItems OrderItem[]
+
+  @@map("product_variant")
+}
+
+enum PromotionType {
+  PERCENTAGE
+  FIXED
+}
+
+model Promotion {
+  id            String        @id @default(cuid())
+  code          String        @unique
+  type          PromotionType
+  value         Int
+  minOrderCents Int?
+  startsAt      DateTime
+  endsAt        DateTime
+  isActive      Boolean       @default(true)
+
+  orders Order[]
+
+  @@map("promotion")
+}
+
+enum OrderStatus {
+  EN_PREPARATION
+  PRETE_AU_RETRAIT
+  RETIREE
+  ANNULEE
+}
+
+enum PaymentMethod {
+  CARD
+  ON_PICKUP
+}
+
+// userId is a bare field, not a relation, until the User model
+// lands with better-auth (Phase 4).
+model Order {
+  id                     String        @id @default(cuid())
+  orderNumber            String        @unique @default(cuid())
+  userId                 String
+  status                 OrderStatus   @default(EN_PREPARATION)
+  paymentMethod          PaymentMethod
+  pickupDate             DateTime
+  pickupSlot             String
+  subtotalCents          Int
+  loyaltyDiscountCents   Int           @default(0)
+  promotionId            String?
+  promotionDiscountCents Int           @default(0)
+  totalCents             Int
+  createdAt              DateTime      @default(now())
+  updatedAt              DateTime      @updatedAt
+
+  promotion Promotion?  @relation(fields: [promotionId], references: [id])
+  items     OrderItem[]
+
+  @@index([userId])
+  @@map("order")
+}
+
+model OrderItem {
+  id             String @id @default(cuid())
+  orderId        String
+  variantId      String
+  quantity       Int
+  unitPriceCents Int
+
+  order   Order          @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  variant ProductVariant @relation(fields: [variantId], references: [id])
+
+  @@map("order_item")
+}
+
+// userId is a bare field, not a relation, until the User model
+// lands with better-auth (Phase 4).
+model Favorite {
+  userId    String
+  productId String
+  createdAt DateTime @default(now())
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@id([userId, productId])
+  @@map("favorite")
+}
+
+// Placeholder tiers (names/thresholds) from the design mockup —
+// to replace with the client's real loyalty rules before launch.
+model LoyaltyTier {
+  id            String @id @default(cuid())
+  name          String @unique
+  minSpentCents Int    @unique
+  discountPct   Int
+
+  @@map("loyalty_tier")
+}
