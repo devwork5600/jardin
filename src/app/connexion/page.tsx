@@ -9,6 +9,7 @@ import {
   ConnexionFormSchema,
   type ConnexionFormSchemaType,
 } from "@/lib/validators/email-schemas";
+import connexionHero from "@/assets/images/connexion-comptoir.jpeg";
 
 export default function ConnexionPage() {
   const [socialLoading, setSocialLoading] = useState(false);
@@ -62,11 +63,12 @@ export default function ConnexionPage() {
     <section className="container-page grid min-h-screen content-center grid-cols-[repeat(auto-fit,minmax(min(100%,400px),1fr))] items-stretch gap-[clamp(32px,5vw,72px)] py-[clamp(32px,5vw,64px)] pb-[clamp(64px,8vw,112px)]">
       <div className="relative min-h-[520px] min-w-0 overflow-hidden rounded-block bg-green-deep">
         <Image
-          src="/images/Gemini_Generated_Image_9redl29redl29red.jpeg"
+          src={connexionHero}
           alt="Comptoir Jardin Indoor : sac de commande e-drive, plant de basilic, produit en retrait"
           fill
           sizes="(min-width: 900px) 50vw, 100vw"
           className="object-cover"
+          placeholder="blur"
           priority
         />
         <div className="absolute inset-0 bg-linear-to-b from-green-deep/0 to-green-deep/90" />
