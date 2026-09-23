@@ -123,6 +123,46 @@ async function main() {
     });
   }
 
+  // Flagship product from the product-page mockup: 3 power variants, specs,
+  // and the shop's advice. The first paragraph doubles as the page summary.
+  const flagshipSlug = slugify("Panneau LED TS 1000 — 150 W");
+  const flagship = await prisma.product.update({
+    where: { slug: flagshipSlug },
+    data: {
+      optionName: "Puissance",
+      description: [
+        "Spectre complet, silencieux et économe. Idéal pour une chambre de culture 60 × 60 à 80 × 80, de la croissance à la floraison.",
+        "Le TS 1000 reste l'un des panneaux les plus demandés en boutique : un rendement solide pour une consommation réelle de 150 W, sans ventilateur, donc parfaitement silencieux.",
+        "Son spectre complet couvre toutes les phases de culture. Le variateur intégré permet de doser l'intensité selon la hauteur et le stade des plantes.",
+      ].join("\n\n"),
+      conseil:
+        "Associez-le à un extracteur 100 mm et un filtre à charbon : c'est le trio qu'on recommande pour une première tente 80 × 80.",
+    },
+  });
+  const flagshipVariants = [
+    { sku: "PANNEAU-LED-TS-1000-150-W", label: "TS 1000 — 150 W", detail: "60×60 à 80×80", priceCents: 14900, compareAtCents: 17900, position: 0 },
+    { sku: "PANNEAU-LED-TS-2000-300-W", label: "TS 2000 — 300 W", detail: "100×100", priceCents: 26900, compareAtCents: 30900, position: 1 },
+    { sku: "PANNEAU-LED-TS-3000-450-W", label: "TS 3000 — 450 W", detail: "120×120", priceCents: 36900, compareAtCents: null, position: 2 },
+  ];
+  for (const variant of flagshipVariants) {
+    await prisma.productVariant.upsert({
+      where: { sku: variant.sku },
+      update: { ...variant },
+      create: { ...variant, productId: flagship.id, stock: 8 },
+    });
+  }
+  await prisma.productCharacteristic.deleteMany({ where: { productId: flagship.id } });
+  await prisma.productCharacteristic.createMany({
+    data: [
+      ["Puissance réelle", "150 W"],
+      ["Surface conseillée", "60×60 à 80×80 cm"],
+      ["Spectre", "Complet 3000–5000 K + IR"],
+      ["Variateur", "Intégré, 0–100 %"],
+      ["Refroidissement", "Passif, silencieux"],
+      ["Garantie", "3 ans"],
+    ].map(([label, value], position) => ({ productId: flagship.id, label, value, position })),
+  });
+
   // Two products seeded earlier in Phase 3 (kept), re-homed under the tree.
   await prisma.product.upsert({
     where: { slug: "rampe-led-600w" },
@@ -153,7 +193,7 @@ async function main() {
 
   await prisma.product.upsert({
     where: { slug: "tente-culture-secret-jardin" },
-    update: {},
+    update: { optionName: "Dimensions" },
     create: {
       name: "Tente de culture",
       slug: "tente-culture-secret-jardin",
