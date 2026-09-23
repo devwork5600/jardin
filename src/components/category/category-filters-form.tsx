@@ -67,7 +67,7 @@ export function CategoryFiltersForm({
       onSubmit={(event) => event.preventDefault()}
       className="container-page flex flex-wrap items-start gap-10 pb-[clamp(64px,8vw,112px)]"
     >
-      <aside className="sticky top-24 flex min-w-[200px] flex-[0_1_230px] flex-col gap-7">
+      <aside className="flex min-[900px]:sticky min-[900px]:top-24 min-w-[200px] flex-[0_1_230px] flex-col gap-7">
         {brands.length > 0 && (
           <fieldset>
             <legend className={FACET_TITLE}>Marque</legend>
