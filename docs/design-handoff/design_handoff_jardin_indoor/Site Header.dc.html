@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<header style="position:sticky;top:0;z-index:30;background:rgba(247,245,241,0.92);backdrop-filter:blur(12px);border-bottom:1px solid #E6E2DA;font-family:'Manrope',Helvetica,Arial,sans-serif">
+  <div style="max-width:1240px;margin:0 auto;padding:18px 24px;display:flex;flex-wrap:wrap;gap:14px 24px;align-items:center;justify-content:space-between">
+    <a href="Jardin Indoor - Accueil v3.dc.html" style="font-family:'Noto Serif',serif;font-style:italic;font-weight:600;font-size:20px;color:#173A2A;white-space:nowrap;text-decoration:none">Jardin Indoor</a>
+    <nav style="display:flex;flex-wrap:wrap;gap:6px 28px;font-family:'Noto Serif',serif;font-size:14px">
+      <sc-for list="{{ links }}" as="n" hint-placeholder-count="5">
+        <a href="{{ n.href }}" style="color:{{ n.color }};padding-bottom:5px;border-bottom:1px solid {{ n.border }};text-decoration:none">{{ n.label }}</a>
+      </sc-for>
+    </nav>
+    <div style="display:flex;gap:18px;align-items:center;font-size:13px;font-weight:600">
+      <a href="Jardin Indoor - Mon compte.dc.html" style="color:#173A2A;text-decoration:none">Mon compte</a>
+      <a href="Jardin Indoor - Paiement.dc.html" style="color:#173A2A;display:flex;gap:6px;align-items:center;text-decoration:none">Panier <span style="background:#173A2A;color:#F7F5F1;border-radius:999px;min-width:20px;height:20px;padding:0 6px;display:inline-flex;align-items:center;justify-content:center;font-size:11px">{{ count }}</span></a>
+    </div>
+  </div>
+</header>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:&quot;1240px&quot;,&quot;height&quot;:&quot;80px&quot;},&quot;active&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;accueil&quot;,&quot;boutique&quot;,&quot;outdoor&quot;,&quot;cbd&quot;,&quot;vinyles&quot;,&quot;&quot;],&quot;default&quot;:&quot;boutique&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;cartCount&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:0,&quot;tsType&quot;:&quot;number&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const active = this.props.active ?? "";
+    const L = [
+      ["accueil", "Accueil", "Jardin Indoor - Accueil v3.dc.html"],
+      ["boutique", "Culture indoor", "Jardin Indoor - Categorie.dc.html"],
+      ["outdoor", "Outdoor", "Jardin Indoor - Categorie.dc.html"],
+      ["cbd", "CBD", "Jardin Indoor - Categorie.dc.html"],
+      ["vinyles", "Vinyles", "Jardin Indoor - Categorie.dc.html"]
+    ];
+    return {
+      count: this.props.cartCount ?? 0,
+      links: L.map(([k, label, href]) => ({ label, href, color: k === active ? "#16261D" : "#4E7A62", border: k === active ? "#16261D" : "transparent" }))
+    };
+  }
+}
+</script>
+</body>
+</html>

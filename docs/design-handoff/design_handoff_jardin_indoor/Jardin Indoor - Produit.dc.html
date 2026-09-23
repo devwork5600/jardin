@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<script src="./image-slot.js"></script>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #F7F5F1; color: #1B2A22; font-family: 'Manrope', Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+  a { color: #1F4A36; text-decoration: none; }
+  a:hover { color: #8C4A26; }
+  h1, h2, h3, h4, p, ul { margin: 0; }
+  ul { padding: 0; list-style: none; }
+  button { font-family: inherit; }
+</style>
+</helmet>
+
+<div style="max-width:100%;overflow-x:hidden">
+  <dc-import name="Site Header" active="boutique" cart-count="{{ cart }}" hint-size="100%,72px"></dc-import>
+
+  <section style="max-width:1240px;margin:0 auto;padding:28px 24px clamp(56px,7vw,96px)">
+    <div style="display:flex;flex-wrap:wrap;gap:8px;font-size:12px;color:#7C877F">
+      <a href="Jardin Indoor - Accueil v3.dc.html" style="color:#7C877F">Accueil</a><span>/</span>
+      <a href="Jardin Indoor - Categorie.dc.html" style="color:#7C877F">Culture indoor</a><span>/</span>
+      <a href="Jardin Indoor - Categorie.dc.html" style="color:#7C877F">Éclairage</a><span>/</span>
+      <span style="color:#16261D">Panneau LED TS 1000</span>
+    </div>
+
+    <div style="margin-top:28px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:clamp(32px,5vw,72px);align-items:start">
+      <div style="min-width:0;display:flex;flex-direction:column;gap:14px">
+        <div style="position:relative;aspect-ratio:1/1;border-radius:24px;overflow:hidden;background:#EFECE6">
+          <image-slot id="pdp-main" shape="rounded" radius="24" placeholder="Photo produit principale"></image-slot>
+          <span style="position:absolute;top:18px;left:18px;background:#8C4A26;color:#FFFFFF;padding:6px 12px;border-radius:999px;font-size:10.5px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;pointer-events:none">Promo −17 %</span>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px">
+          <div style="aspect-ratio:1/1;border-radius:14px;overflow:hidden;border:2px solid #16261D"><image-slot id="pdp-t1" shape="rounded" radius="12" placeholder="Vue 1"></image-slot></div>
+          <div style="aspect-ratio:1/1;border-radius:14px;overflow:hidden"><image-slot id="pdp-t2" shape="rounded" radius="14" placeholder="Vue 2"></image-slot></div>
+          <div style="aspect-ratio:1/1;border-radius:14px;overflow:hidden"><image-slot id="pdp-t3" shape="rounded" radius="14" placeholder="Vue 3"></image-slot></div>
+          <div style="aspect-ratio:1/1;border-radius:14px;overflow:hidden"><image-slot id="pdp-t4" shape="rounded" radius="14" placeholder="En situation"></image-slot></div>
+        </div>
+      </div>
+
+      <div style="min-width:0;position:sticky;top:96px;display:flex;flex-direction:column;gap:24px">
+        <div>
+          <span style="font-size:11px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#8C4A26">Mars Hydro · Éclairage LED</span>
+          <h1 style="margin-top:12px;font-family:'Noto Serif',serif;font-weight:400;font-size:clamp(32px,4vw,48px);line-height:1.08;letter-spacing:-0.02em;color:#16261D">Panneau LED TS 1000 <em>150 W</em></h1>
+          <p style="margin-top:14px;font-size:15px;line-height:1.7;color:#4B5A51;text-wrap:pretty">Spectre complet, silencieux et économe. Idéal pour une chambre de culture 60 × 60 à 80 × 80, de la croissance à la floraison.</p>
+        </div>
+
+        <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:baseline">
+          <span style="font-family:'Noto Serif',serif;font-size:34px;color:#16261D">{{ priceLabel }}</span>
+          <span style="font-size:15px;color:#9AA39D;text-decoration:line-through">{{ oldLabel }}</span>
+          <span style="font-size:12px;font-weight:600;color:#1F4A36;background:#E1EBDD;padding:5px 10px;border-radius:999px">Prix e-drive</span>
+        </div>
+
+        <div>
+          <h4 style="font-size:10.5px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#7C877F">Puissance</h4>
+          <div style="margin-top:12px;display:flex;flex-wrap:wrap;gap:10px">
+            <sc-for list="{{ variants }}" as="v" hint-placeholder-count="3">
+              <button onClick="{{ v.onClick }}" style="border:1px solid {{ v.border }};background:{{ v.bg }};color:{{ v.color }};padding:12px 18px;border-radius:12px;font-size:13.5px;font-weight:600;cursor:pointer;text-align:left">{{ v.label }}<br /><span style="font-size:11.5px;font-weight:500;opacity:0.7">{{ v.surface }}</span></button>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-wrap:wrap;gap:12px">
+          <div style="display:flex;align-items:center;border:1px solid #CFCAC0;border-radius:12px;overflow:hidden">
+            <button onClick="{{ dec }}" style="width:44px;height:52px;border:none;background:transparent;font-size:18px;color:#16261D;cursor:pointer">−</button>
+            <span style="min-width:32px;text-align:center;font-weight:700">{{ qty }}</span>
+            <button onClick="{{ inc }}" style="width:44px;height:52px;border:none;background:transparent;font-size:18px;color:#16261D;cursor:pointer">+</button>
+          </div>
+          <button onClick="{{ add }}" style="flex:1 1 200px;height:52px;border:none;border-radius:12px;background:#8C4A26;color:#FFFFFF;font-size:12.5px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;box-shadow:0 10px 24px rgba(140,74,38,0.25)">{{ addLabel }}</button>
+        </div>
+
+        <div style="background:#EFECE6;border-radius:16px;padding:18px 20px;display:flex;flex-direction:column;gap:12px">
+          <div style="display:flex;gap:12px;align-items:center;font-size:14px;color:#16261D"><span style="width:8px;height:8px;border-radius:50%;background:#1F4A36;flex-shrink:0"></span><strong style="font-weight:600">En stock à Vannes</strong> — prêt en retrait dès demain</div>
+          <div style="font-size:13.5px;line-height:1.55;color:#4B5A51">Retrait en boutique, aucun frais de port. Remise fidélité appliquée au panier.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="max-width:1240px;margin:0 auto;padding:0 24px clamp(56px,7vw,96px)">
+    <div style="display:flex;flex-wrap:wrap;gap:6px 32px;border-bottom:1px solid #DFDBD2">
+      <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="3">
+        <button onClick="{{ t.onClick }}" style="border:none;background:transparent;padding:14px 0;margin-bottom:-1px;border-bottom:2px solid {{ t.border }};font-family:'Noto Serif',serif;font-size:18px;color:{{ t.color }};cursor:pointer">{{ t.label }}</button>
+      </sc-for>
+    </div>
+    <div style="margin-top:32px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:40px">
+      <sc-if value="{{ isDesc }}" hint-placeholder-val="{{ true }}">
+        <div style="min-width:0;display:flex;flex-direction:column;gap:16px;font-size:15px;line-height:1.75;color:#4B5A51;max-width:62ch">
+          <p>Le TS 1000 reste l'un des panneaux les plus demandés en boutique : un rendement solide pour une consommation réelle de 150 W, sans ventilateur, donc parfaitement silencieux.</p>
+          <p>Son spectre complet couvre toutes les phases de culture. Le variateur intégré permet de doser l'intensité selon la hauteur et le stade des plantes.</p>
+        </div>
+      </sc-if>
+      <sc-if value="{{ isSpecs }}" hint-placeholder-val="{{ false }}">
+        <ul style="min-width:0">
+          <sc-for list="{{ specs }}" as="s" hint-placeholder-count="6">
+            <li style="display:flex;justify-content:space-between;gap:16px;padding:14px 0;border-bottom:1px solid #DFDBD2;font-size:14.5px"><span style="color:#5B6961">{{ s.k }}</span><span style="color:#16261D;font-weight:600;text-align:right">{{ s.v }}</span></li>
+          </sc-for>
+        </ul>
+      </sc-if>
+      <sc-if value="{{ isAdvice }}" hint-placeholder-val="{{ false }}">
+        <div style="min-width:0;background:#1B3226;color:#F7F5F1;border-radius:20px;padding:28px">
+          <span style="font-size:10.5px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#C9D98F">Le conseil de la boutique</span>
+          <p style="margin-top:14px;font-family:'Noto Serif',serif;font-style:italic;font-size:20px;line-height:1.5">« Associez-le à un extracteur 100 mm et un filtre à charbon : c'est le trio qu'on recommande pour une première tente 80 × 80. »</p>
+        </div>
+      </sc-if>
+    </div>
+  </section>
+
+  <section style="max-width:1240px;margin:0 auto;padding:0 24px clamp(64px,8vw,112px)">
+    <h2 style="font-family:'Noto Serif',serif;font-weight:400;font-size:clamp(28px,3.4vw,40px);letter-spacing:-0.02em;color:#16261D">Souvent <em>associés</em></h2>
+    <div style="margin-top:28px;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,220px),1fr));gap:22px">
+      <sc-for list="{{ related }}" as="p" hint-placeholder-count="4">
+        <a href="#" style="min-width:0;display:flex;flex-direction:column;gap:12px;color:#16261D">
+          <div style="aspect-ratio:4/5;border-radius:16px;overflow:hidden;background:#EFECE6"><image-slot id="{{ p.slot }}" shape="rounded" radius="16" placeholder="Photo produit"></image-slot></div>
+          <span style="font-size:10.5px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:#7C877F">{{ p.brand }}</span>
+          <span style="font-family:'Noto Serif',serif;font-size:17px;line-height:1.3">{{ p.name }}</span>
+          <span style="font-size:15px;font-weight:700">{{ p.price }}</span>
+        </a>
+      </sc-for>
+    </div>
+  </section>
+
+  <dc-import name="Site Footer" hint-size="100%,300px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { v: 0, qty: 1, cart: 0, tab: 0, added: false };
+  renderVals() {
+    const V = [["TS 1000 — 150 W", "60×60 à 80×80", 149, 179], ["TS 2000 — 300 W", "100×100", 269, 309], ["TS 3000 — 450 W", "120×120", 369, null]];
+    const cur = V[this.state.v];
+    const eur = n => n.toFixed(2).replace(".", ",") + " €";
+    const tabs = ["Description", "Caractéristiques", "Conseil"];
+    return {
+      cart: this.state.cart,
+      priceLabel: eur(cur[2]), oldLabel: cur[3] ? eur(cur[3]) : "",
+      variants: V.map((v, i) => {
+        const on = i === this.state.v;
+        return { label: v[0], surface: v[1], bg: on ? "#16261D" : "#FFFFFF", color: on ? "#F7F5F1" : "#16261D", border: on ? "#16261D" : "#CFCAC0", onClick: () => this.setState({ v: i }) };
+      }),
+      qty: this.state.qty,
+      inc: () => this.setState(s => ({ qty: s.qty + 1 })),
+      dec: () => this.setState(s => ({ qty: Math.max(1, s.qty - 1) })),
+      add: () => { this.setState(s => ({ cart: s.cart + s.qty, added: true })); setTimeout(() => this.setState({ added: false }), 1600); },
+      addLabel: this.state.added ? "Ajouté au panier ✓" : "Ajouter au panier",
+      tabs: tabs.map((label, i) => ({ label, color: i === this.state.tab ? "#16261D" : "#7C877F", border: i === this.state.tab ? "#16261D" : "transparent", onClick: () => this.setState({ tab: i }) })),
+      isDesc: this.state.tab === 0, isSpecs: this.state.tab === 1, isAdvice: this.state.tab === 2,
+      specs: [{ k: "Puissance réelle", v: "150 W" }, { k: "Surface conseillée", v: "60×60 à 80×80 cm" }, { k: "Spectre", v: "Complet 3000–5000 K + IR" }, { k: "Variateur", v: "Intégré, 0–100 %" }, { k: "Refroidissement", v: "Passif, silencieux" }, { k: "Garantie", v: "3 ans" }],
+      related: [
+        { slot: "pdp-r1", brand: "Prima Klima", name: "Extracteur 100 mm", price: "89,00 €" },
+        { slot: "pdp-r2", brand: "Prima Klima", name: "Filtre à charbon 100 × 300", price: "54,00 €" },
+        { slot: "pdp-r3", brand: "Secret Jardin", name: "Chambre Hydro Shoot 80", price: "129,00 €" },
+        { slot: "pdp-r4", brand: "Garden Highpro", name: "Kit poulies Easy Roll", price: "12,50 €" }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<footer style="background:#0E4A36;color:#DCE8E0;font-family:'Manrope',Helvetica,Arial,sans-serif">
+  <div style="max-width:1240px;margin:0 auto;padding:clamp(40px,5vw,64px) 24px 28px">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:28px">
+      <div>
+        <div style="font-family:'Noto Serif',serif;font-size:24px;color:#F7F5F1">Jardin Indoor</div>
+        <p style="margin:10px 0 0;font-size:13px;line-height:1.6;color:#9FBFAE;max-width:28ch">36 av. Gontran Bienvenu, 56000 Vannes · 02 97 49 95 09</p>
+      </div>
+      <sc-for list="{{ cols }}" as="col" hint-placeholder-count="3">
+        <div>
+          <h4 style="margin:0;font-size:10.5px;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:#9FBFAE">{{ col.title }}</h4>
+          <ul style="margin:14px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:9px">
+            <sc-for list="{{ col.links }}" as="l" hint-placeholder-count="3">
+              <li><a href="{{ l.href }}" style="font-family:'Noto Serif',serif;font-style:italic;font-size:14px;color:#E7EFEA;text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(231,239,234,0.35)">{{ l.label }}</a></li>
+            </sc-for>
+          </ul>
+        </div>
+      </sc-for>
+    </div>
+    <div style="margin-top:40px;padding-top:18px;border-top:1px solid rgba(231,239,234,0.14);display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:space-between;font-family:'Noto Serif',serif;font-style:italic;font-size:12.5px;color:#9FBFAE">
+      <span>© 2026 Jardin Indoor — Indépendant depuis 2011.</span>
+      <span>Vente interdite aux mineurs</span>
+    </div>
+  </div>
+</footer>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:&quot;1240px&quot;,&quot;height&quot;:&quot;320px&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const c = "Jardin Indoor - Categorie.dc.html", a = "Jardin Indoor - Mon compte.dc.html";
+    return { cols: [
+      { title: "Boutique", links: [{ label: "Culture indoor", href: c }, { label: "Outdoor & hors-sol", href: c }, { label: "CBD / CBG", href: c }, { label: "Vinyles & pop culture", href: c }] },
+      { title: "E-drive", links: [{ label: "Mon compte", href: a }, { label: "Connexion", href: "Jardin Indoor - Connexion.dc.html" }, { label: "Panier", href: "Jardin Indoor - Paiement.dc.html" }] },
+      { title: "Informations", links: [{ label: "Mentions légales", href: "#" }, { label: "CGV", href: "#" }, { label: "Confidentialité", href: "#" }] }
+    ] };
+  }
+}
+</script>
+</body>
+</html>

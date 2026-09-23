@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<script src="./image-slot.js"></script>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #F7F5F1; color: #1B2A22; font-family: 'Manrope', Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+  a { color: #1F4A36; text-decoration: none; }
+  a:hover { color: #8C4A26; }
+  h1, h2, h3, h4, p, ul { margin: 0; }
+  button, input { font-family: inherit; }
+</style>
+</helmet>
+
+<div style="max-width:100%;overflow-x:hidden">
+  <dc-import name="Site Header" active="" cart-count="0" hint-size="100%,72px"></dc-import>
+
+  <section style="max-width:1240px;margin:0 auto;padding:clamp(32px,5vw,64px) 24px clamp(64px,8vw,112px)">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr));gap:clamp(32px,5vw,72px);align-items:stretch">
+      <div style="min-width:0;position:relative;min-height:520px;border-radius:24px;overflow:hidden;background:#1B3226">
+        <div style="position:absolute;inset:0"><image-slot id="login-img" shape="rect" placeholder="Photo — feuillage ou boutique"></image-slot></div>
+        <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(15,28,21,0) 40%,rgba(15,28,21,0.85) 100%);pointer-events:none"></div>
+        <div style="position:absolute;left:32px;right:32px;bottom:32px;color:#F7F5F1;pointer-events:none">
+          <span style="font-size:10.5px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#C9D98F">E-drive fidélité</span>
+          <p style="margin-top:12px;font-family:'Noto Serif',serif;font-size:clamp(24px,2.6vw,32px);line-height:1.2">Vos prix e-drive, vos remises fidélité et vos commandes, au même endroit.</p>
+        </div>
+      </div>
+
+      <div style="min-width:0;display:flex;flex-direction:column;justify-content:center;max-width:460px;width:100%;justify-self:center">
+        <div style="display:flex;background:#EFECE6;border-radius:12px;padding:4px">
+          <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="2">
+            <button onClick="{{ t.onClick }}" style="flex:1;border:none;border-radius:9px;padding:12px;background:{{ t.bg }};color:{{ t.color }};font-size:13.5px;font-weight:600;cursor:pointer;box-shadow:{{ t.shadow }}">{{ t.label }}</button>
+          </sc-for>
+        </div>
+
+        <h1 style="margin-top:32px;font-family:'Noto Serif',serif;font-weight:400;font-size:clamp(34px,4vw,48px);line-height:1.05;letter-spacing:-0.02em;color:#16261D">{{ title }}</h1>
+        <p style="margin-top:12px;font-size:14.5px;line-height:1.65;color:#5B6961">{{ subtitle }}</p>
+
+        <form style="margin-top:28px;display:flex;flex-direction:column;gap:16px">
+          <sc-if value="{{ isSignup }}" hint-placeholder-val="{{ false }}">
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,160px),1fr));gap:14px">
+              <label style="display:flex;flex-direction:column;gap:7px;font-size:12px;font-weight:600;color:#5B6961">Prénom<input style="height:50px;border:1px solid #DFDBD2;border-radius:12px;padding:0 14px;font-size:14.5px;background:#FFFFFF" /></label>
+              <label style="display:flex;flex-direction:column;gap:7px;font-size:12px;font-weight:600;color:#5B6961">Nom<input style="height:50px;border:1px solid #DFDBD2;border-radius:12px;padding:0 14px;font-size:14.5px;background:#FFFFFF" /></label>
+            </div>
+          </sc-if>
+          <label style="display:flex;flex-direction:column;gap:7px;font-size:12px;font-weight:600;color:#5B6961">E-mail<input type="email" placeholder="vous@exemple.fr" style="height:50px;border:1px solid #DFDBD2;border-radius:12px;padding:0 14px;font-size:14.5px;background:#FFFFFF" /></label>
+          <label style="display:flex;flex-direction:column;gap:7px;font-size:12px;font-weight:600;color:#5B6961">
+            <span style="display:flex;justify-content:space-between">Mot de passe
+              <sc-if value="{{ isLogin }}" hint-placeholder-val="{{ true }}"><a href="#" style="font-weight:500;color:#8C4A26">Oublié ?</a></sc-if>
+            </span>
+            <input type="password" placeholder="••••••••" style="height:50px;border:1px solid #DFDBD2;border-radius:12px;padding:0 14px;font-size:14.5px;background:#FFFFFF" />
+          </label>
+          <sc-if value="{{ isSignup }}" hint-placeholder-val="{{ false }}">
+            <label style="display:flex;gap:10px;align-items:flex-start;font-size:13px;line-height:1.5;color:#4B5A51"><input type="checkbox" style="accent-color:#1F4A36;width:16px;height:16px;margin-top:2px" />Je certifie avoir plus de 18 ans et accepte les CGV.</label>
+          </sc-if>
+          <sc-if value="{{ isLogin }}" hint-placeholder-val="{{ true }}">
+            <label style="display:flex;gap:10px;align-items:center;font-size:13px;color:#4B5A51"><input type="checkbox" checked="" style="accent-color:#1F4A36;width:16px;height:16px" />Rester connecté</label>
+          </sc-if>
+          <a href="Jardin Indoor - Mon compte.dc.html" style="margin-top:8px;height:54px;border-radius:12px;background:#16261D;color:#F7F5F1;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;box-shadow:0 10px 24px rgba(22,38,29,0.2)">{{ cta }}</a>
+        </form>
+        <p style="margin-top:22px;font-size:12.5px;line-height:1.6;color:#7C877F">Un souci de connexion ? Appelez la boutique au <a href="tel:0297499509" style="color:#16261D;font-weight:600">02 97 49 95 09</a>.</p>
+      </div>
+    </div>
+  </section>
+
+  <dc-import name="Site Footer" hint-size="100%,300px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;mode&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;login&quot;,&quot;signup&quot;],&quot;default&quot;:&quot;login&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  state = { mode: this.props.mode === "signup" ? 1 : 0 };
+  renderVals() {
+    const m = this.state.mode;
+    return {
+      tabs: ["Connexion", "Créer un compte"].map((label, i) => ({ label, bg: i === m ? "#FFFFFF" : "transparent", color: i === m ? "#16261D" : "#7C877F", shadow: i === m ? "0 2px 8px rgba(22,38,29,0.08)" : "none", onClick: () => this.setState({ mode: i }) })),
+      isLogin: m === 0, isSignup: m === 1,
+      title: m === 0 ? "Bon retour parmi nous." : "Rejoindre l'e-drive.",
+      subtitle: m === 0 ? "Connectez-vous pour retrouver vos prix e-drive et vos remises fidélité." : "Un compte suffit pour commander en ligne et cumuler vos remises fidélité.",
+      cta: m === 0 ? "Se connecter" : "Créer mon compte"
+    };
+  }
+}
+</script>
+</body>
+</html>

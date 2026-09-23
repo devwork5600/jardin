@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<script src="./image-slot.js"></script>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #F7F5F1; color: #1B2A22; font-family: 'Manrope', Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+  a { color: #1F4A36; text-decoration: none; }
+  a:hover { color: #8C4A26; }
+  h1, h2, h3, h4, p, ul, blockquote { margin: 0; }
+  ul { padding: 0; list-style: none; }
+</style>
+</helmet>
+
+<div style="max-width:100%;overflow-x:hidden">
+
+  <header style="position:sticky;top:0;z-index:30;background:rgba(247,245,241,0.92);backdrop-filter:blur(12px)">
+    <div style="max-width:1240px;margin:0 auto;padding:20px 24px;display:flex;gap:24px;align-items:center;justify-content:space-between">
+      <a href="#" style="font-family:'Noto Serif',serif;font-style:italic;font-weight:600;font-size:20px;color:#173A2A;white-space:nowrap">Jardin Indoor</a>
+      <nav style="display:flex;flex-wrap:wrap;gap:6px 30px;font-family:'Noto Serif',serif;font-size:14px">
+        <sc-for list="{{ nav }}" as="n" hint-placeholder-count="5">
+          <a href="#" onClick="{{ n.onClick }}" style="color:{{ n.color }};padding-bottom:5px;border-bottom:1px solid {{ n.border }}">{{ n.label }}</a>
+        </sc-for>
+      </nav>
+      <div style="display:flex;gap:18px;align-items:center;font-size:13px;font-weight:600">
+        <a href="Jardin Indoor - Mon compte.dc.html" style="color:#173A2A">Compte</a>
+        <a href="Jardin Indoor - Paiement.dc.html" style="color:#173A2A;display:flex;gap:6px;align-items:center">Panier <span style="background:#173A2A;color:#F7F5F1;border-radius:999px;min-width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;font-size:11px">0</span></a>
+      </div>
+    </div>
+  </header>
+
+  <section style="max-width:1240px;margin:0 auto;padding:clamp(40px,7vw,96px) 24px clamp(64px,8vw,112px)">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr));gap:clamp(40px,6vw,80px);align-items:center">
+      <div style="min-width:0">
+        <span style="font-size:11px;font-weight:600;letter-spacing:0.22em;text-transform:uppercase;color:#8C4A26">Jardinerie urbaine · Vannes</span>
+        <h1 style="margin-top:22px;font-family:'Noto Serif',serif;font-weight:400;font-size:clamp(48px,7vw,92px);line-height:1.02;letter-spacing:-0.025em;color:#16261D">Cultiver<br /><em style="font-weight:400">chez soi,</em><br />sans compromis.</h1>
+        <p style="margin-top:26px;max-width:46ch;font-size:16px;line-height:1.7;color:#4B5A51;text-wrap:pretty">Culture indoor, outdoor et hors-sol, CBD, vinyles et pop culture. Plus de 1 800 références choisies une à une depuis 2011, en boutique indépendante à Vannes.</p>
+        <div style="margin-top:36px;display:flex;flex-wrap:wrap;gap:22px;align-items:center">
+          <a href="#univers" style="background:#16261D;color:#F7F5F1;padding:15px 26px;border-radius:10px;font-size:14px;font-weight:600;box-shadow:0 8px 20px rgba(22,38,29,0.18)">Explorer le catalogue</a>
+          <a href="#edrive" style="color:#16261D;font-size:14px;font-weight:600;display:flex;gap:8px;align-items:center">Commander en E-drive <span>→</span></a>
+        </div>
+      </div>
+      <div style="min-width:0;position:relative;padding:0 0 40px 0">
+        <div style="position:relative;aspect-ratio:1/1;width:100%;border-radius:24px;overflow:hidden;box-shadow:0 30px 60px rgba(22,38,29,0.16)">
+          <image-slot id="v3-hero" shape="rounded" radius="24" src="images/hero-boutique.png" placeholder="Photo — boutique ou culture luxuriante"></image-slot>
+        </div>
+        <blockquote style="position:absolute;left:clamp(-8px,-3vw,-40px);bottom:0;max-width:270px;background:#FFFFFF;border-radius:16px;padding:22px 24px;box-shadow:0 20px 40px rgba(22,38,29,0.14)">
+          <p style="font-family:'Noto Serif',serif;font-style:italic;font-size:16px;line-height:1.45;color:#16261D">« Aucun quota de marque. Juste les produits qui marchent vraiment. »</p>
+          <div style="margin-top:14px;display:flex;gap:10px;align-items:center;font-size:10.5px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:#7C877F"><span style="width:24px;height:1px;background:#7C877F"></span>Le gérant</div>
+        </blockquote>
+      </div>
+    </div>
+  </section>
+
+  <section style="background:#EFECE6">
+    <div style="max-width:1240px;margin:0 auto;padding:clamp(64px,8vw,112px) 24px">
+      <div style="max-width:680px;margin:0 auto;text-align:center">
+        <h2 style="font-family:'Noto Serif',serif;font-weight:400;font-size:clamp(30px,3.6vw,44px);letter-spacing:-0.02em;color:#16261D">L'indépendance comme méthode</h2>
+        <p style="margin-top:18px;font-size:15.5px;line-height:1.7;color:#4B5A51;text-wrap:pretty">Contrairement aux franchises et aux sites de vente en ligne, chaque produit est testé, choisi au fil des saisons, et vendu avec un vrai conseil.</p>
+      </div>
+      <div style="margin-top:clamp(40px,5vw,64px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:40px">
+        <sc-for list="{{ pillars }}" as="p" hint-placeholder-count="3">
+          <div style="text-align:center;display:flex;flex-direction:column;align-items:center;gap:14px">
+            <span style="width:48px;height:48px;border-radius:50%;background:#1F4A36;color:#F7F5F1;display:flex;align-items:center;justify-content:center;font-family:'Noto Serif',serif;font-style:italic;font-size:17px">{{ p.num }}</span>
+            <h3 style="font-family:'Noto Serif',serif;font-weight:400;font-size:21px;color:#16261D">{{ p.title }}</h3>
+            <p style="max-width:32ch;font-size:14px;line-height:1.65;color:#5B6961;text-wrap:pretty">{{ p.text }}</p>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <section id="univers" style="max-width:1240px;margin:0 auto;padding:clamp(64px,8vw,112px) 24px">
+    <div style="display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;justify-content:space-between">
+      <div>
+        <span style="font-size:11px;font-weight:600;letter-spacing:0.22em;text-transform:uppercase;color:#8C4A26">Nos univers</span>
+        <h2 style="margin-top:12px;font-family:'Noto Serif',serif;font-weight:400;font-size:clamp(32px,4vw,52px);line-height:1.05;letter-spacing:-0.02em;color:#16261D">La sélection <em>Jardin Indoor</em></h2>
+      </div>
+      <a href="Jardin Indoor - Categorie.dc.html" style="font-size:13px;font-weight:600;color:#16261D;border-bottom:1px solid #16261D;padding-bottom:3px">Voir toute la boutique</a>
+    </div>
+
+    <div style="margin-top:40px;display:flex;flex-wrap:wrap;gap:22px">
+
+      <div style="min-width:0;flex:2 1 520px;position:relative;min-height:440px;border-radius:20px;overflow:hidden;background:#2A3B31">
+        <div style="position:absolute;inset:0"><image-slot id="v3-indoor" shape="rect" src="images/indoor.jpeg" placeholder="Photo — culture indoor sous lampe"></image-slot></div>
+        <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(15,28,21,0) 35%,rgba(15,28,21,0.82) 100%);pointer-events:none"></div>
+        <div style="position:absolute;left:clamp(24px,3vw,36px);right:clamp(24px,3vw,36px);bottom:clamp(24px,3vw,36px);color:#F7F5F1;pointer-events:none">
+          <h3 style="font-family:'Noto Serif',serif;font-weight:500;font-size:clamp(30px,3.4vw,42px);letter-spacing:-0.02em">Culture indoor</h3>
+          <p style="margin-top:10px;max-width:42ch;font-size:14.5px;line-height:1.6;color:#DCE3DD">Éclairage, ventilation, chambres de culture, mesure et contrôle — de la première tente à l'installation complète.</p>
+          <a href="#" style="pointer-events:auto;margin-top:22px;display:inline-flex;gap:10px;align-items:center;background:#8C4A26;color:#FFFFFF;padding:13px 20px;border-radius:10px;font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase">Découvrir <span>→</span></a>
+        </div>
+      </div>
+
+      <div style="min-width:0;flex:1 1 280px;position:relative;min-height:440px;border-radius:20px;overflow:hidden;background:#16261D">
+        <div style="position:absolute;inset:0"><image-slot id="v3-cbd" shape="rect" src="images/cbd.jpeg" placeholder="Photo — fleurs CBD, fond sombre"></image-slot></div>
+        <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(15,28,21,0.1) 30%,rgba(15,28,21,0.88) 100%);pointer-events:none"></div>
+        <span style="position:absolute;top:24px;left:24px;background:rgba(247,245,241,0.16);backdrop-filter:blur(8px);color:#F7F5F1;padding:7px 12px;border-radius:999px;font-size:10.5px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;pointer-events:none">Leaf District</span>
+        <div style="position:absolute;left:28px;right:28px;bottom:28px;color:#F7F5F1;pointer-events:none">
+          <h3 style="font-family:'Noto Serif',serif;font-weight:500;font-size:32px;line-height:1.05;letter-spacing:-0.02em">CBD &amp; CBG</h3>
+          <p style="margin-top:10px;font-size:14px;line-height:1.55;color:#DCE3DD">Sélection bretonne, fleurs, huiles et résines, conseillées en boutique.</p>
+          <a href="#" style="pointer-events:auto;margin-top:18px;display:inline-flex;gap:8px;font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#FFFFFF">Voir la gamme →</a>
+        </div>
+      </div>
+
+      <div style="min-width:0;flex:2 1 520px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));border-radius:20px;overflow:hidden;background:#E3E0D9;min-height:300px">
+        <div style="position:relative;min-height:260px"><image-slot id="v3-outdoor" shape="rect" src="images/outdoor.jpeg" placeholder="Photo — substrats & pots"></image-slot></div>
+        <div style="padding:clamp(26px,3vw,40px);display:flex;flex-direction:column;justify-content:center;gap:12px">
+          <span style="font-size:10.5px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:#7C877F">Au fil des saisons</span>
+          <h3 style="font-family:'Noto Serif',serif;font-weight:500;font-size:28px;line-height:1.1;letter-spacing:-0.02em;color:#16261D">Outdoor &amp; hors-sol</h3>
+          <p style="font-size:14px;line-height:1.65;color:#4B5A51">Substrats, engrais, pots et additifs pour chaque méthode de culture.</p>
+          <a href="#" style="align-self:flex-start;margin-top:8px;border:1px solid #16261D;color:#16261D;padding:10px 18px;border-radius:10px;font-size:11.5px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase">Parcourir</a>
+        </div>
+      </div>
+
+      <div style="min-width:0;flex:1 1 280px;position:relative;min-height:300px;border-radius:20px;overflow:hidden;background:#0F1A14">
+        <div style="position:absolute;inset:0"><image-slot id="v3-vinyles" shape="rect" src="images/vinyles.jpeg" placeholder="Photo — bacs vinyles, noir & blanc"></image-slot></div>
+        <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,14,12,0.78) 0%,rgba(10,14,12,0.1) 60%);pointer-events:none"></div>
+        <div style="position:absolute;top:28px;left:28px;right:28px;color:#F7F5F1;pointer-events:none">
+          <h3 style="font-family:'Noto Serif',serif;font-weight:500;font-size:28px;letter-spacing:-0.02em">Vinyles &amp; pop culture</h3>
+          <p style="margin-top:8px;font-size:14px;line-height:1.55;color:#DCE3DD">Arrivages réguliers, neuf et occasion. Figurines et objets de collection.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section id="edrive" style="max-width:1240px;margin:0 auto;padding:0 24px clamp(64px,8vw,112px)">
+    <div style="background:#1B3226;border-radius:24px;padding:clamp(36px,6vw,80px);color:#F7F5F1;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:clamp(36px,5vw,72px);align-items:center">
+      <div style="min-width:0">
+        <span style="font-size:11px;font-weight:600;letter-spacing:0.22em;text-transform:uppercase;color:#C9D98F">E-drive fidélité</span>
+        <h2 style="margin-top:16px;font-family:'Noto Serif',serif;font-weight:400;font-size:clamp(32px,4vw,50px);line-height:1.08;letter-spacing:-0.02em">Commandez en ligne,<br /><em>retirez en boutique.</em></h2>
+        <p style="margin-top:20px;max-width:44ch;font-size:15px;line-height:1.7;color:#B8C4BC;text-wrap:pretty">Les prix, promos et remises fidélité affichés sont réservés aux commandes passées en ligne avec votre compte. Aucun frais de port.</p>
+        <div style="margin-top:32px;display:flex;flex-wrap:wrap;gap:12px">
+          <a href="#" style="background:#8C4A26;color:#FFFFFF;padding:15px 24px;border-radius:10px;font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;box-shadow:0 10px 24px rgba(0,0,0,0.25)">Créer mon compte</a>
+          <a href="#" style="background:rgba(247,245,241,0.08);border:1px solid rgba(247,245,241,0.22);color:#F7F5F1;padding:15px 24px;border-radius:10px;font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase">Me connecter</a>
+        </div>
+      </div>
+      <ol style="min-width:0;margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:14px">
+        <sc-for list="{{ steps }}" as="s" hint-placeholder-count="3">
+          <li style="display:flex;gap:18px;align-items:flex-start;background:rgba(247,245,241,0.05);border:1px solid rgba(247,245,241,0.1);border-radius:16px;padding:20px 22px">
+            <span style="font-family:'Noto Serif',serif;font-style:italic;font-size:26px;line-height:1;color:#C9D98F;flex-shrink:0;width:32px">{{ s.num }}</span>
+            <div style="min-width:0">
+              <h3 style="font-family:'Noto Serif',serif;font-weight:500;font-size:19px">{{ s.title }}</h3>
+              <p style="margin-top:5px;font-size:13.5px;line-height:1.55;color:#B8C4BC">{{ s.text }}</p>
+            </div>
+          </li>
+        </sc-for>
+        <li style="font-size:11.5px;line-height:1.6;color:#8E9C93;padding:4px 4px 0">Remises non cumulables avec les promos en cours. Chèques non acceptés.</li>
+      </ol>
+    </div>
+  </section>
+
+  <section style="max-width:1240px;margin:0 auto;padding:0 24px clamp(64px,8vw,112px)">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:clamp(36px,5vw,72px);align-items:start">
+      <div style="min-width:0">
+        <span style="font-size:11px;font-weight:600;letter-spacing:0.22em;text-transform:uppercase;color:#8C4A26">La boutique</span>
+        <h2 style="margin-top:12px;font-family:'Noto Serif',serif;font-weight:400;font-size:clamp(32px,4vw,48px);line-height:1.08;letter-spacing:-0.02em;color:#16261D">36 avenue Gontran Bienvenu, <em>Vannes</em></h2>
+        <div style="margin-top:14px;display:inline-flex;gap:8px;align-items:center;background:{{ statusBg }};color:{{ statusColor }};padding:7px 13px;border-radius:999px;font-size:12px;font-weight:600">
+          <span style="width:7px;height:7px;border-radius:50%;background:{{ statusColor }}"></span>{{ statusLabel }}
+        </div>
+        <ul style="margin-top:28px">
+          <sc-for list="{{ hours }}" as="h" hint-placeholder-count="4">
+            <li style="display:flex;justify-content:space-between;gap:16px;padding:15px 0;border-bottom:1px solid #DFDBD2;font-size:14.5px">
+              <span style="font-family:'Noto Serif',serif;color:#16261D">{{ h.day }}</span>
+              <span style="color:#5B6961;font-weight:500">{{ h.time }}</span>
+            </li>
+          </sc-for>
+        </ul>
+        <div style="margin-top:28px;display:flex;flex-wrap:wrap;gap:22px;align-items:center">
+          <a href="tel:0297499509" style="background:#16261D;color:#F7F5F1;padding:15px 24px;border-radius:10px;font-size:14px;font-weight:600">02 97 49 95 09</a>
+          <a href="#" style="color:#16261D;font-size:14px;font-weight:600">Nous écrire →</a>
+        </div>
+      </div>
+      <div style="min-width:0;position:relative;aspect-ratio:4/3.4;border-radius:20px;overflow:hidden">
+        <image-slot id="v3-shop" shape="rounded" radius="20" src="images/facade.jpeg" placeholder="Photo — façade ou comptoir"></image-slot>
+      </div>
+    </div>
+  </section>
+
+  <section style="position:relative;background:#16261D;min-height:420px;display:flex;align-items:center">
+    <div style="position:absolute;inset:0"><image-slot id="v3-banner" shape="rect" src="images/banner.jpeg" placeholder="Photo — feuillage sombre plein cadre"></image-slot></div>
+    <div style="position:absolute;inset:0;background:rgba(15,28,21,0.62);pointer-events:none"></div>
+    <div style="position:relative;max-width:760px;margin:0 auto;padding:clamp(64px,8vw,112px) 24px;text-align:center;color:#F7F5F1;pointer-events:none">
+      <h2 style="font-family:'Noto Serif',serif;font-style:italic;font-weight:400;font-size:clamp(34px,4.6vw,58px);line-height:1.08;letter-spacing:-0.02em;text-wrap:balance">Un projet d'installation ?</h2>
+      <p style="margin-top:18px;font-size:16px;line-height:1.65;color:#DCE3DD">Dites-nous votre espace et vos envies : on vous prépare un devis sur mesure, matériel choisi et prix juste.</p>
+      <div style="margin-top:32px;display:flex;flex-wrap:wrap;gap:12px;justify-content:center;pointer-events:auto">
+        <a href="#" style="background:#8C4A26;color:#FFFFFF;padding:15px 26px;border-radius:10px;font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase">Demander un devis</a>
+        <a href="tel:0297499509" style="background:rgba(247,245,241,0.1);border:1px solid rgba(247,245,241,0.3);color:#F7F5F1;padding:15px 26px;border-radius:10px;font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase">Appeler la boutique</a>
+      </div>
+    </div>
+  </section>
+
+  <footer style="background:#0E4A36;color:#DCE8E0">
+    <div style="max-width:1240px;margin:0 auto;padding:clamp(48px,6vw,72px) 24px 28px">
+      <div style="text-align:center;font-family:'Noto Serif',serif;font-size:28px;color:#F7F5F1">Jardin Indoor</div>
+      <div style="margin-top:40px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:28px">
+        <sc-for list="{{ footer }}" as="col" hint-placeholder-count="4">
+          <div>
+            <h4 style="font-size:10.5px;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:#9FBFAE">{{ col.title }}</h4>
+            <ul style="margin-top:14px;display:flex;flex-direction:column;gap:9px">
+              <sc-for list="{{ col.links }}" as="l" hint-placeholder-count="3">
+                <li><a href="#" style="font-family:'Noto Serif',serif;font-style:italic;font-size:14px;color:#E7EFEA;text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(231,239,234,0.35)">{{ l }}</a></li>
+              </sc-for>
+            </ul>
+          </div>
+        </sc-for>
+      </div>
+      <div style="margin-top:48px;padding-top:20px;border-top:1px solid rgba(231,239,234,0.14);display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:space-between;font-family:'Noto Serif',serif;font-style:italic;font-size:12.5px;color:#9FBFAE">
+        <span>© 2026 Jardin Indoor — Indépendant depuis 2011.</span>
+        <span>Vente interdite aux mineurs</span>
+      </div>
+    </div>
+  </footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { nav: 0 };
+  renderVals() {
+    const labels = ["Boutique", "Culture", "CBD", "Vinyles", "Contact"];
+    const nav = labels.map((label, i) => ({
+      label,
+      color: i === this.state.nav ? "#16261D" : "#4E7A62",
+      border: i === this.state.nav ? "#16261D" : "transparent",
+      onClick: e => { e.preventDefault(); this.setState({ nav: i }); }
+    }));
+    const now = new Date(), d = now.getDay(), m = now.getHours() * 60 + now.getMinutes();
+    const starts = { 0: null, 1: 840, 2: 600, 3: 600, 4: 840, 5: 600, 6: 720 };
+    const open = starts[d] !== null && m >= starts[d] && m < 1120;
+    return {
+      nav,
+      statusLabel: open ? "Ouvert en ce moment" : "Fermé en ce moment",
+      statusBg: open ? "#E1EBDD" : "#EFE3DA",
+      statusColor: open ? "#1F4A36" : "#8C4A26",
+      pillars: [
+        { num: "i", title: "Sélection", text: "Des produits choisis au fil des mois et des saisons, sans obligation de quota." },
+        { num: "ii", title: "Conseil", text: "Une écoute et des recommandations adaptées à votre espace et votre méthode." },
+        { num: "iii", title: "Proximité", text: "Retrait en boutique à Vannes, sans frais de port, six jours sur sept." }
+      ],
+      steps: [
+        { num: "1", title: "Vous commandez", text: "Prix e-drive et promos en cours appliqués au panier." },
+        { num: "2", title: "On prépare", text: "Votre commande est rassemblée en boutique." },
+        { num: "3", title: "Vous retirez", text: "Aux horaires d'ouverture, remise fidélité incluse." }
+      ],
+      hours: [
+        { day: "Lundi & jeudi", time: "14h00 – 18h40" },
+        { day: "Mardi, mercredi & vendredi", time: "10h00 – 18h40" },
+        { day: "Samedi", time: "12h00 – 18h40" },
+        { day: "Dimanche", time: "Fermé" }
+      ],
+      footer: [
+        { title: "Boutique", links: ["Culture indoor", "Outdoor & hors-sol", "CBD / CBG", "Vinyles & pop culture"] },
+        { title: "E-drive", links: ["Mon compte", "Panier", "Promos"] },
+        { title: "Informations", links: ["Mentions légales", "CGV", "Confidentialité"] },
+        { title: "Contact", links: ["02 97 49 95 09", "Nous écrire", "Facebook"] }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>
