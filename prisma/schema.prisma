@@ -181,3 +181,14 @@ model Favorite {
   @@id([userId, productId])
   @@map("favorite")
 }
+
+// Placeholder tiers (names/thresholds) from the design mockup —
+// to replace with the client's real loyalty rules before launch.
+model LoyaltyTier {
+  id            String @id @default(cuid())
+  name          String @unique
+  minSpentCents Int    @unique
+  discountPct   Int
+
+  @@map("loyalty_tier")
+}
