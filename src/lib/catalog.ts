@@ -74,10 +74,3 @@ export async function getCategoryProducts(category: {
       };
     });
 }
-
-// "Popularité" has no real metric yet: best-sellers first, then newest.
-export function comparePopularity(a: CategoryProduct, b: CategoryProduct) {
-  const aBest = a.badge === "BEST_SELLER" ? 0 : 1;
-  const bBest = b.badge === "BEST_SELLER" ? 0 : 1;
-  return aBest - bBest || b.createdAt.getTime() - a.createdAt.getTime();
-}

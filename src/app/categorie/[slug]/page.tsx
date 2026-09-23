@@ -1,12 +1,18 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { CategoryFiltersForm } from "@/components/category/category-filters-form";
+import { Pagination } from "@/components/category/pagination";
 import { ProductCard } from "@/components/category/product-card";
+import { getCategoryBySlug, getCategoryProducts } from "@/lib/catalog";
 import {
-  comparePopularity,
-  getCategoryBySlug,
-  getCategoryProducts,
-} from "@/lib/catalog";
+  applyFilters,
+  paginate,
+  parseFilters,
+  parsePage,
+  serializeFilters,
+  sortProducts,
+} from "@/lib/category-filters";
 
 export async function generateMetadata(
   props: PageProps<"/categorie/[slug]">,
@@ -38,16 +44,32 @@ export default async function CategoryPage(
   props: PageProps<"/categorie/[slug]">,
 ) {
   const { slug } = await props.params;
-  const { sub } = await props.searchParams;
+  const query = await props.searchParams;
 
   const category = await getCategoryBySlug(slug);
   if (!category) notFound();
 
+  const filters = parseFilters(query);
+  const activeSub = category.children.find((child) => child.slug === query.sub);
+
   const allProducts = await getCategoryProducts(category);
-  const activeSub = category.children.find((child) => child.slug === sub);
-  const products = allProducts
-    .filter((product) => !activeSub || product.categorySlug === activeSub.slug)
-    .sort(comparePopularity);
+  const inScope = allProducts.filter(
+    (product) => !activeSub || product.categorySlug === activeSub.slug,
+  );
+  const brands = [
+    ...new Map(
+      inScope.flatMap((p) => (p.brand ? [[p.brand.slug, p.brand] as const] : [])),
+    ).values(),
+  ].sort((a, b) => a.name.localeCompare(b.name, "fr"));
+
+  const filtered = sortProducts(applyFilters(inScope, filters), filters.sort);
+  const { items, page, totalPages } = paginate(filtered, parsePage(query));
+
+  const basePath = `/categorie/${category.slug}`;
+  const hrefFor = (extra: { sub?: string; page?: number }) => {
+    const search = serializeFilters(filters, extra);
+    return search ? `${basePath}?${search}` : basePath;
+  };
 
   return (
     <>
@@ -94,11 +116,7 @@ export default async function CategoryPage(
               return (
                 <Link
                   key={chip.slug ?? "all"}
-                  href={
-                    chip.slug
-                      ? `/categorie/${category.slug}?sub=${chip.slug}`
-                      : `/categorie/${category.slug}`
-                  }
+                  href={hrefFor({ sub: chip.slug ?? undefined })}
                   className={`rounded-pill border px-[18px] py-2.5 text-[13px] font-semibold ${
                     active
                       ? "border-ink bg-ink text-ivory"
@@ -114,42 +132,31 @@ export default async function CategoryPage(
         )}
       </section>
 
-      <section className="container-page flex flex-wrap items-start gap-10 pb-[clamp(64px,8vw,112px)]">
-        <aside className="sticky top-24 flex min-w-[200px] flex-[0_1_230px] flex-col gap-7">
-          <div className="rounded-2xl bg-green-deep p-5 text-ivory">
-            <div className="font-serif text-lg">Besoin d&apos;aide ?</div>
-            <p className="mt-2 text-[13px] leading-[1.55] text-on-dark-secondary">
-              On vous aide à dimensionner votre installation.
-            </p>
-            <a
-              href="tel:0297499509"
-              className="mt-3.5 inline-block text-[13px] font-bold text-lime"
-            >
-              02 97 49 95 09 →
-            </a>
+      <CategoryFiltersForm
+        key={`${category.slug}/${activeSub?.slug ?? ""}`}
+        brands={brands}
+        defaultValues={filters}
+        basePath={basePath}
+        sub={activeSub?.slug}
+        countLabel={`${filtered.length} produit${filtered.length > 1 ? "s" : ""}`}
+      >
+        {items.length > 0 ? (
+          <div className="mt-7 grid grid-cols-[repeat(auto-fill,minmax(min(100%,230px),1fr))] gap-x-[22px] gap-y-8">
+            {items.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
           </div>
-        </aside>
-
-        <div className="min-w-0 flex-[1_1_560px]">
-          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border pb-[18px]">
-            <span className="text-[13.5px] text-text-tertiary">
-              {products.length} produit{products.length > 1 ? "s" : ""}
-            </span>
-          </div>
-
-          {products.length > 0 ? (
-            <div className="mt-7 grid grid-cols-[repeat(auto-fill,minmax(min(100%,230px),1fr))] gap-x-[22px] gap-y-8">
-              {products.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
-          ) : (
-            <p className="mt-10 text-[15px] text-text-tertiary">
-              Aucun produit dans cette catégorie pour le moment.
-            </p>
-          )}
-        </div>
-      </section>
+        ) : (
+          <p className="mt-10 text-[15px] text-text-tertiary">
+            Aucun produit ne correspond à ces filtres.
+          </p>
+        )}
+        <Pagination
+          page={page}
+          totalPages={totalPages}
+          hrefFor={(n) => hrefFor({ sub: activeSub?.slug, page: n })}
+        />
+      </CategoryFiltersForm>
     </>
   );
 }
