@@ -96,3 +96,21 @@ model ProductVariant {
 
   @@map("product_variant")
 }
+
+enum PromotionType {
+  PERCENTAGE
+  FIXED
+}
+
+model Promotion {
+  id            String        @id @default(cuid())
+  code          String        @unique
+  type          PromotionType
+  value         Int
+  minOrderCents Int?
+  startsAt      DateTime
+  endsAt        DateTime
+  isActive      Boolean       @default(true)
+
+  @@map("promotion")
+}
