@@ -1,7 +1,19 @@
+import { BoutiqueSection } from "@/components/home/boutique-section";
+import { DevisBannerSection } from "@/components/home/devis-banner-section";
+import { EdriveSection } from "@/components/home/edrive-section";
+import { HeroSection } from "@/components/home/hero-section";
+import { PillarsSection } from "@/components/home/pillars-section";
+import { UniversSection } from "@/components/home/univers-section";
+
 export default function Home() {
   return (
-    <div className="container-page flex flex-1 items-center justify-center py-32">
-      <p className="text-text-muted">Accueil — à venir (Phase 5).</p>
-    </div>
+    <>
+      <HeroSection />
+      <PillarsSection />
+      <UniversSection />
+      <EdriveSection />
+      <BoutiqueSection />
+      <DevisBannerSection />
+    </>
   );
 }
