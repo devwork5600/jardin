@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { authClient } from "@/lib/auth-client";
 
 const NAV_LINKS = [
   { label: "Accueil", href: "/" },
@@ -17,6 +18,7 @@ type SiteHeaderProps = {
 
 export function SiteHeader({ cartCount = 0 }: SiteHeaderProps) {
   const pathname = usePathname();
+  const { data: session } = authClient.useSession();
 
   return (
     <header className="sticky top-0 z-30 border-b border-border-soft bg-ivory/92 backdrop-blur-md">
@@ -48,8 +50,11 @@ export function SiteHeader({ cartCount = 0 }: SiteHeaderProps) {
         </nav>
 
         <div className="flex items-center gap-[18px] text-[13px] font-semibold">
-          <Link href="/compte" className="text-ink-logo">
-            Mon compte
+          <Link
+            href={session ? "/compte" : "/connexion"}
+            className="text-ink-logo"
+          >
+            {session ? "Mon compte" : "Connexion"}
           </Link>
           <Link
             href="/paiement"
