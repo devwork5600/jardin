@@ -20,15 +20,23 @@ model Brand {
 }
 
 model Category {
-  id       String     @id @default(cuid())
-  name     String
-  slug     String     @unique
-  parentId String?
-  parent   Category?  @relation("CategoryTree", fields: [parentId], references: [id])
-  children Category[] @relation("CategoryTree")
-  products Product[]
+  id          String     @id @default(cuid())
+  name        String
+  slug        String     @unique
+  description String?
+  position    Int        @default(0)
+  parentId    String?
+  parent      Category?  @relation("CategoryTree", fields: [parentId], references: [id])
+  children    Category[] @relation("CategoryTree")
+  products    Product[]
 
   @@map("category")
+}
+
+enum ProductBadge {
+  BEST_SELLER
+  NEW
+  ADVICE
 }
 
 enum ProductStatus {
@@ -44,6 +52,7 @@ model Product {
   description String
   conseil     String?
   status      ProductStatus @default(DRAFT)
+  badge       ProductBadge?
   categoryId  String
   brandId     String?
   createdAt   DateTime      @default(now())
