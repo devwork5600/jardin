@@ -68,7 +68,6 @@ export default function ConnexionPage() {
           fill
           sizes="(min-width: 900px) 50vw, 100vw"
           className="object-cover"
-          placeholder="blur"
           priority
         />
         <div className="absolute inset-0 bg-linear-to-b from-green-deep/0 to-green-deep/90" />
