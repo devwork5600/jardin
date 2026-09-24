@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useCartStore } from "@/lib/cart";
 import { formatPrice } from "@/lib/format";
 import type { PricedLine } from "@/lib/cart-pricing";
 import type { CheckoutFormValues } from "@/lib/validators/checkout-schema";
@@ -16,8 +15,6 @@ type Props = {
   error?: string;
 };
 
-const STEP_BUTTON =
-  "flex size-6 cursor-pointer items-center justify-center rounded-md border border-ivory/25 text-sm leading-none text-ivory disabled:cursor-default disabled:opacity-30";
 const WARNING = "text-[#f2b88e]";
 
 function SkeletonLine() {
@@ -36,9 +33,9 @@ function SkeletonLine() {
   );
 }
 
+// Read-only: quantities are edited on /panier, this is the last look before
+// ordering. A line with a problem says so and points back to the cart.
 function RecapLine({ line }: { line: PricedLine }) {
-  const setQuantity = useCartStore((state) => state.setQuantity);
-  const removeItem = useCartStore((state) => state.removeItem);
   const unavailable = line.problem === "UNAVAILABLE";
 
   return (
@@ -61,61 +58,22 @@ function RecapLine({ line }: { line: PricedLine }) {
             <span className="text-on-dark-secondary"> — {line.variantLabel}</span>
           )}
         </div>
-
-        <div className="mt-1.5 flex items-center gap-2.5 text-xs text-on-dark-secondary">
-          {!unavailable && (
-            <div className="flex items-center gap-1.5">
-              <button
-                type="button"
-                className={STEP_BUTTON}
-                aria-label={`Diminuer la quantité de ${line.name}`}
-                disabled={line.quantity <= 1}
-                onClick={() => setQuantity(line.variantId, line.quantity - 1)}
-              >
-                −
-              </button>
-              <span className="min-w-4 text-center font-semibold text-ivory">
-                {line.quantity}
-              </span>
-              <button
-                type="button"
-                className={STEP_BUTTON}
-                aria-label={`Augmenter la quantité de ${line.name}`}
-                disabled={line.quantity >= line.stock}
-                onClick={() => setQuantity(line.variantId, line.quantity + 1)}
-              >
-                +
-              </button>
-            </div>
-          )}
-          <button
-            type="button"
-            className="cursor-pointer underline underline-offset-2"
-            onClick={() => removeItem(line.variantId)}
-          >
-            Retirer
-          </button>
-        </div>
-
-        {line.problem === "UNAVAILABLE" && (
-          <p className={`mt-1.5 text-xs ${WARNING}`}>
-            Cet article n&apos;est plus disponible.
-          </p>
+        {!unavailable && (
+          <div className="mt-1 text-xs text-on-dark-secondary">
+            Qté {line.quantity}
+          </div>
         )}
-        {line.problem === "INSUFFICIENT_STOCK" && (
+        {line.problem && (
           <p className={`mt-1.5 text-xs ${WARNING}`}>
-            Stock disponible : {line.stock}.{" "}
-            <button
-              type="button"
-              className="cursor-pointer font-semibold underline underline-offset-2"
-              onClick={() =>
-                line.stock > 0
-                  ? setQuantity(line.variantId, line.stock)
-                  : removeItem(line.variantId)
-              }
+            {unavailable
+              ? "Cet article n'est plus disponible."
+              : `Stock disponible : ${line.stock}.`}{" "}
+            <Link
+              href="/panier"
+              className="font-semibold underline underline-offset-2"
             >
-              {line.stock > 0 ? `Ajuster à ${line.stock}` : "Retirer l'article"}
-            </button>
+              Modifier le panier
+            </Link>
           </p>
         )}
       </div>
@@ -140,7 +98,15 @@ export function CheckoutRecap({
 
   return (
     <aside className="min-w-0 flex-[1_1_340px] rounded-[20px] bg-green-deep p-[clamp(22px,3vw,32px)] text-ivory min-[900px]:sticky min-[900px]:top-24">
-      <h2 className="font-serif text-[22px] font-medium">Récapitulatif</h2>
+      <div className="flex items-baseline justify-between gap-3">
+        <h2 className="font-serif text-[22px] font-medium">Récapitulatif</h2>
+        <Link
+          href="/panier"
+          className="text-[13px] text-on-dark-secondary underline underline-offset-2"
+        >
+          Modifier le panier
+        </Link>
+      </div>
 
       <ul className="mt-5 flex flex-col gap-4">
         {cart
