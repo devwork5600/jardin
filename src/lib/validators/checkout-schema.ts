@@ -1,8 +1,7 @@
 import { z } from "zod";
 import { CartItemsSchema } from "@/lib/validators/cart-schema";
+import { FR_PHONE } from "@/lib/validators/phone";
 
-// French landline/mobile, with or without +33 / 0033 and separators.
-const FR_PHONE = /^(?:(?:\+|00)33|0)\s?[1-9](?:[\s.-]?\d{2}){4}$/;
 
 export const CheckoutFormSchema = z.object({
   firstName: z.string().trim().min(1, "Prénom requis"),

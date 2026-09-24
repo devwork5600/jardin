@@ -23,7 +23,7 @@ export function DevisBannerSection() {
         </p>
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           <Link
-            href="/contact"
+            href="/contact?sujet=devis"
             className="rounded-[10px] bg-copper px-[26px] py-[15px] text-xs font-bold tracking-[0.12em] text-white uppercase"
           >
             Demander un devis
