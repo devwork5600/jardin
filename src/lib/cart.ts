@@ -1,80 +1,95 @@
 import { useSyncExternalStore } from "react";
+import { create } from "zustand";
+import { createJSONStorage, persist } from "zustand/middleware";
+import {
+  CartItemsSchema,
+  MAX_LINE_QUANTITY,
+  type CartItem,
+} from "@/lib/validators/cart-schema";
 
 // The cart only stores what the customer chose (variant + quantity), never
-// prices or names: those are re-read from the database at checkout, so a
-// tampered localStorage can't change what a customer pays.
-export type CartItem = { variantId: string; quantity: number };
+// prices or names: those are re-read from the database when the cart is
+// priced, so a tampered localStorage can't change what someone pays.
 
-const STORAGE_KEY = "jardin-cart";
-const EMPTY: CartItem[] = [];
-const listeners = new Set<() => void>();
+export const CART_STORAGE_KEY = "jardin-cart-store";
 
-// useSyncExternalStore needs a referentially stable snapshot: re-parse only
-// when the raw string actually changed.
-let cache: { raw: string | null; items: CartItem[] } = { raw: null, items: EMPTY };
+type CartState = {
+  items: CartItem[];
+  addItem: (variantId: string, quantity: number) => void;
+  setQuantity: (variantId: string, quantity: number) => void;
+  removeItem: (variantId: string) => void;
+  clear: () => void;
+};
 
-function isCartItem(value: unknown): value is CartItem {
-  const item = value as CartItem;
-  return (
-    typeof item?.variantId === "string" &&
-    Number.isInteger(item.quantity) &&
-    item.quantity > 0
+export const useCartStore = create<CartState>()(
+  persist(
+    (set) => ({
+      items: [],
+      addItem: (variantId, quantity) =>
+        set((state) => {
+          const existing = state.items.find((i) => i.variantId === variantId);
+          return {
+            items: existing
+              ? state.items.map((i) =>
+                  i.variantId === variantId
+                    ? {
+                        ...i,
+                        quantity: Math.min(i.quantity + quantity, MAX_LINE_QUANTITY),
+                      }
+                    : i,
+                )
+              : [
+                  ...state.items,
+                  { variantId, quantity: Math.min(quantity, MAX_LINE_QUANTITY) },
+                ],
+          };
+        }),
+      setQuantity: (variantId, quantity) =>
+        set((state) => ({
+          items:
+            quantity <= 0
+              ? state.items.filter((i) => i.variantId !== variantId)
+              : state.items.map((i) =>
+                  i.variantId === variantId
+                    ? { ...i, quantity: Math.min(quantity, MAX_LINE_QUANTITY) }
+                    : i,
+                ),
+        })),
+      removeItem: (variantId) =>
+        set((state) => ({
+          items: state.items.filter((i) => i.variantId !== variantId),
+        })),
+      clear: () => set({ items: [] }),
+    }),
+    {
+      name: CART_STORAGE_KEY,
+      version: 1,
+      storage: createJSONStorage(() => localStorage),
+      partialize: (state) => ({ items: state.items }),
+      // Rehydrated by <Providers> after mount, not at creation: reading
+      // localStorage during the first render would not match the server HTML.
+      skipHydration: true,
+      // Whatever comes back from localStorage is untrusted input.
+      merge: (persisted, current) => {
+        const parsed = CartItemsSchema.safeParse(
+          (persisted as Partial<CartState> | undefined)?.items,
+        );
+        return { ...current, items: parsed.success ? parsed.data : [] };
+      },
+    },
+  ),
+);
+
+export const selectCartCount = (state: CartState) =>
+  state.items.reduce((total, item) => total + item.quantity, 0);
+
+// False until the persisted cart has been read from localStorage (see
+// <Providers>). Pages must wait for it: before that the cart is just empty,
+// which is not the same thing as "the customer has nothing in their cart".
+export function useCartHydrated() {
+  return useSyncExternalStore(
+    (onChange) => useCartStore.persist.onFinishHydration(onChange),
+    () => useCartStore.persist.hasHydrated(),
+    () => false,
   );
-}
-
-function readRaw() {
-  try {
-    return localStorage.getItem(STORAGE_KEY);
-  } catch {
-    return null;
-  }
-}
-
-function getSnapshot(): CartItem[] {
-  const raw = readRaw();
-  if (raw !== cache.raw) {
-    let items = EMPTY;
-    try {
-      const parsed: unknown = raw ? JSON.parse(raw) : EMPTY;
-      if (Array.isArray(parsed)) items = parsed.filter(isCartItem);
-    } catch {
-      items = EMPTY;
-    }
-    cache = { raw, items };
-  }
-  return cache.items;
-}
-
-function subscribe(onChange: () => void) {
-  listeners.add(onChange);
-  window.addEventListener("storage", onChange);
-  return () => {
-    listeners.delete(onChange);
-    window.removeEventListener("storage", onChange);
-  };
-}
-
-export function addToCart(variantId: string, quantity: number) {
-  const items = getSnapshot();
-  const existing = items.find((item) => item.variantId === variantId);
-  const next = existing
-    ? items.map((item) =>
-        item.variantId === variantId
-          ? { ...item, quantity: item.quantity + quantity }
-          : item,
-      )
-    : [...items, { variantId, quantity }];
-
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-  } catch {
-    // Storage blocked (private mode, quota): the cart just won't persist.
-  }
-  listeners.forEach((listener) => listener());
-}
-
-export function useCart() {
-  const items = useSyncExternalStore(subscribe, getSnapshot, () => EMPTY);
-  const count = items.reduce((total, item) => total + item.quantity, 0);
-  return { items, count };
 }

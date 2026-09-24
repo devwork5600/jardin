@@ -11,6 +11,13 @@ import {
 } from "@/lib/validators/email-schemas";
 import { connexionHeroDataUri } from "@/assets/images/connexion-comptoir.base64";
 
+// Where to go after signing in: ?next=/some/path, same-site paths only (a
+// "//host" or absolute URL would be an open redirect).
+function getCallbackURL() {
+  const next = new URLSearchParams(window.location.search).get("next");
+  return next && next.startsWith("/") && !next.startsWith("//") ? next : "/";
+}
+
 export default function ConnexionPage() {
   const [socialLoading, setSocialLoading] = useState(false);
   const [sent, setSent] = useState(false);
@@ -34,7 +41,7 @@ export default function ConnexionPage() {
     setSent(false);
     const { error } = await authClient.signIn.magicLink({
       email: values.email,
-      callbackURL: "/",
+      callbackURL: getCallbackURL(),
     });
     if (error) {
       setError("email", {
@@ -51,7 +58,7 @@ export default function ConnexionPage() {
 
     setSocialLoading(true);
     try {
-      await authClient.signIn.social({ provider, callbackURL: "/" });
+      await authClient.signIn.social({ provider, callbackURL: getCallbackURL() });
       // rien après cette ligne : redirection gérée par better-auth
     } catch {
       setSocialLoading(false);

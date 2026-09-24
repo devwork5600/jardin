@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { addToCart } from "@/lib/cart";
+import { useCartStore } from "@/lib/cart";
 import { formatPrice } from "@/lib/format";
 import {
   makeAddToCartSchema,
@@ -40,6 +40,7 @@ export function ProductDetail({
 }: Props) {
   const [activeImage, setActiveImage] = useState(0);
   const [added, setAdded] = useState(false);
+  const addToCart = useCartStore((state) => state.addItem);
 
   const schema = useMemo(() => makeAddToCartSchema(variants), [variants]);
   const { control, handleSubmit, setValue } = useForm<AddToCartValues>({
@@ -56,7 +57,11 @@ export function ProductDetail({
       ? Math.round((1 - variant.priceCents / variant.compareAtCents) * 100)
       : null;
 
+  // Design: "Panneau LED TS 1000 *150 W*" — with several variants the italic
+  // accent is the selected one; otherwise whatever follows a " — " in the name.
   const [title, ...titleRest] = name.split(" — ");
+  const accent =
+    variants.length > 1 ? variant.label : titleRest.join(" — ") || null;
 
   const selectVariant = (next: Variant) => {
     setValue("variantId", next.id);
@@ -125,7 +130,7 @@ export function ProductDetail({
           </span>
           <h1 className="mt-3 font-serif text-[clamp(32px,4vw,48px)] leading-[1.08] font-normal tracking-[-0.02em] text-ink">
             {title}
-            {titleRest.length > 0 && <em> {titleRest.join(" — ")}</em>}
+            {accent && <em> {accent}</em>}
           </h1>
           <p className="mt-3.5 text-[15px] leading-[1.7] text-pretty text-text-secondary">
             {summary}
@@ -134,11 +139,11 @@ export function ProductDetail({
 
         <div className="flex flex-wrap items-baseline gap-3">
           <span className="font-serif text-[34px] text-ink">
-            {formatPrice(variant.priceCents)}
+            {formatPrice(variant.priceCents * quantity)}
           </span>
           {variant.compareAtCents && (
             <span className="text-[15px] text-text-faint line-through">
-              {formatPrice(variant.compareAtCents)}
+              {formatPrice(variant.compareAtCents * quantity)}
             </span>
           )}
           <span className="rounded-pill bg-status-open-bg px-2.5 py-[5px] text-xs font-semibold text-status-open-text">

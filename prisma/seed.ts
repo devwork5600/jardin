@@ -37,7 +37,6 @@ const SUBCATEGORIES = [
 
 // [subcategory slug, brand, name, price €, compare-at €, badge]
 const PRODUCTS: [string, string, string, number, number | null, ProductBadge | null][] = [
-  ["eclairage", "Mars Hydro", "Panneau LED TS 1000 — 150 W", 149, 179, null],
   ["chambres", "Secret Jardin", "Chambre Hydro Shoot 80 × 80 × 160", 129, null, "BEST_SELLER"],
   ["ventilation", "Winflex", "Extracteur Revolution Stealth 125 mm", 159, null, null],
   ["ventilation", "Prima Klima", "Filtre à charbon 125 × 400", 69, null, null],
@@ -163,24 +162,33 @@ async function main() {
 
   // Flagship product from the product-page mockup: 3 power variants, specs,
   // and the shop's advice. The first paragraph doubles as the page summary.
-  const flagshipSlug = slugify("Panneau LED TS 1000 — 150 W");
-  const flagship = await prisma.product.update({
+  const flagshipSlug = "panneau-led-ts-1000";
+  const flagshipFields = {
+    name: "Panneau LED TS 1000",
+    optionName: "Puissance",
+    description: [
+      "Spectre complet, silencieux et économe. Idéal pour une chambre de culture 60 × 60 à 80 × 80, de la croissance à la floraison.",
+      "Le TS 1000 reste l'un des panneaux les plus demandés en boutique : un rendement solide pour une consommation réelle de 150 W, sans ventilateur, donc parfaitement silencieux.",
+      "Son spectre complet couvre toutes les phases de culture. Le variateur intégré permet de doser l'intensité selon la hauteur et le stade des plantes.",
+    ].join("\n\n"),
+    conseil:
+      "Associez-le à un extracteur 100 mm et un filtre à charbon : c'est le trio qu'on recommande pour une première tente 80 × 80.",
+  };
+  const flagship = await prisma.product.upsert({
     where: { slug: flagshipSlug },
-    data: {
-      optionName: "Puissance",
-      description: [
-        "Spectre complet, silencieux et économe. Idéal pour une chambre de culture 60 × 60 à 80 × 80, de la croissance à la floraison.",
-        "Le TS 1000 reste l'un des panneaux les plus demandés en boutique : un rendement solide pour une consommation réelle de 150 W, sans ventilateur, donc parfaitement silencieux.",
-        "Son spectre complet couvre toutes les phases de culture. Le variateur intégré permet de doser l'intensité selon la hauteur et le stade des plantes.",
-      ].join("\n\n"),
-      conseil:
-        "Associez-le à un extracteur 100 mm et un filtre à charbon : c'est le trio qu'on recommande pour une première tente 80 × 80.",
+    update: flagshipFields,
+    create: {
+      ...flagshipFields,
+      slug: flagshipSlug,
+      status: "PUBLISHED",
+      categoryId: subBySlug.get("eclairage")!,
+      brandId: brandIds.get("Mars Hydro")!,
     },
   });
   const flagshipVariants = [
-    { sku: "PANNEAU-LED-TS-1000-150-W", label: "TS 1000 — 150 W", detail: "60×60 à 80×80", priceCents: 14900, compareAtCents: 17900, position: 0 },
-    { sku: "PANNEAU-LED-TS-2000-300-W", label: "TS 2000 — 300 W", detail: "100×100", priceCents: 26900, compareAtCents: 30900, position: 1 },
-    { sku: "PANNEAU-LED-TS-3000-450-W", label: "TS 3000 — 450 W", detail: "120×120", priceCents: 36900, compareAtCents: null, position: 2 },
+    { sku: "PANNEAU-LED-TS-1000-150-W", label: "150 W", detail: "60×60 à 80×80", priceCents: 14900, compareAtCents: 17900, position: 0 },
+    { sku: "PANNEAU-LED-TS-2000-300-W", label: "300 W", detail: "100×100", priceCents: 26900, compareAtCents: 30900, position: 1 },
+    { sku: "PANNEAU-LED-TS-3000-450-W", label: "450 W", detail: "120×120", priceCents: 36900, compareAtCents: null, position: 2 },
   ];
   for (const variant of flagshipVariants) {
     await prisma.productVariant.upsert({
@@ -249,10 +257,33 @@ async function main() {
     },
   });
 
-  // The placeholder photos seeded in Phase 3 were remote placehold.co URLs.
-  await prisma.productImage.deleteMany({
-    where: { url: { startsWith: "https://placehold.co" } },
+  // Placeholder photos (placehold.co) for products that have none, so cards
+  // and the gallery can be judged before real pictures exist. Never touches a
+  // product that already has an image. Sizes/tones vary on purpose: portrait,
+  // square and landscape sources all have to survive object-cover.
+  const TONES = ["DCE8E0", "E1EBDD", "EFE3DA", "D8DDD3", "E3E0D9"];
+  const SIZES = [[800, 1000], [1000, 1000], [1200, 900], [800, 1000], [900, 1200]];
+  const withoutImages = await prisma.product.findMany({
+    where: { images: { none: {} } },
+    select: { id: true, name: true, slug: true },
+    orderBy: { createdAt: "asc" },
   });
+  for (const [index, product] of withoutImages.entries()) {
+    const count = product.slug === flagshipSlug ? 4 : index % 5 === 0 ? 3 : 1;
+    const [width, height] = SIZES[index % SIZES.length];
+    const tone = TONES[index % TONES.length];
+    await prisma.productImage.createMany({
+      data: Array.from({ length: count }, (_, position) => {
+        const view = count === 4 && position === 3 ? "En situation" : `Vue ${position + 1}`;
+        const label = encodeURIComponent(`${product.name}\n${view}`).replace(/%20/g, "+");
+        return {
+          productId: product.id,
+          position,
+          url: `https://placehold.co/${width}x${height}/${tone}/16261D/png?text=${label}`,
+        };
+      }),
+    });
+  }
 
   await prisma.loyaltyTier.upsert({
     where: { name: "Sève" },
