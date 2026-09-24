@@ -1,10 +1,10 @@
 "use client";
 
-import type { ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { placeOrder } from "@/app/paiement/actions";
+import { Field, INPUT_CLASS } from "@/components/form-field";
 import { useCartHydrated, useCartStore } from "@/lib/cart";
 import type { PickupDay } from "@/lib/shop-hours";
 import {
@@ -24,9 +24,6 @@ type Props = {
 const CARD =
   "rounded-[20px] border border-border-soft bg-surface p-[clamp(22px,3vw,32px)]";
 const CARD_TITLE = "font-serif text-[22px] font-medium text-ink";
-const INPUT =
-  "h-12 rounded-input border border-border bg-surface-soft px-3.5 text-[14.5px] font-normal text-ink outline-brand-green";
-
 const PAYMENT_METHODS = [
   {
     value: "CARD",
@@ -41,27 +38,6 @@ const PAYMENT_METHODS = [
     available: true,
   },
 ] as const;
-
-function Field({
-  label,
-  error,
-  children,
-}: {
-  label: string;
-  error?: string;
-  children: ReactNode;
-}) {
-  // Fixed-height error slot: validation messages never shift the layout.
-  return (
-    <label className="flex flex-col gap-[7px] text-xs font-semibold text-text-tertiary">
-      {label}
-      {children}
-      <span className="block h-4 text-[12px] leading-4 font-normal text-copper">
-        {error}
-      </span>
-    </label>
-  );
-}
 
 function CheckoutSkeleton() {
   return (
@@ -128,14 +104,14 @@ export function CheckoutForm({ signedIn, defaultValues, pickupDays }: Props) {
               <input
                 {...register("firstName")}
                 autoComplete="given-name"
-                className={INPUT}
+                className={INPUT_CLASS}
               />
             </Field>
             <Field label="Nom" error={errors.lastName?.message}>
               <input
                 {...register("lastName")}
                 autoComplete="family-name"
-                className={INPUT}
+                className={INPUT_CLASS}
               />
             </Field>
             <Field label="E-mail" error={errors.email?.message}>
@@ -143,7 +119,7 @@ export function CheckoutForm({ signedIn, defaultValues, pickupDays }: Props) {
                 {...register("email")}
                 type="email"
                 autoComplete="email"
-                className={INPUT}
+                className={INPUT_CLASS}
               />
             </Field>
             <Field label="Téléphone" error={errors.phone?.message}>
@@ -152,7 +128,7 @@ export function CheckoutForm({ signedIn, defaultValues, pickupDays }: Props) {
                 type="tel"
                 autoComplete="tel"
                 placeholder="06 12 34 56 78"
-                className={INPUT}
+                className={INPUT_CLASS}
               />
             </Field>
           </div>

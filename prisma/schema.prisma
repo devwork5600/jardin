@@ -272,3 +272,24 @@ model Verification {
   @@index([identifier])
   @@map("verification")
 }
+
+enum ContactTopic {
+  QUESTION
+  QUOTE
+  ORDER
+  OTHER
+}
+
+model ContactMessage {
+  id        String       @id @default(cuid())
+  name      String
+  email     String
+  phone     String?
+  topic     ContactTopic
+  message   String
+  handled   Boolean      @default(false)
+  createdAt DateTime     @default(now())
+
+  @@index([email, createdAt])
+  @@map("contact_message")
+}
