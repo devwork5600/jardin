@@ -51,6 +51,44 @@ const PRODUCTS: [string, string, string, number, number | null, ProductBadge | n
   ["eclairage", "Mars Hydro", "Panneau LED FC 3000 — 300 W", 399, null, "NEW"],
 ];
 
+// More of the same, so the category page has enough rows for infinite scroll
+// (a batch is 12): 14 + 27 = 41 products = 4 batches.
+const EXTRA_PRODUCTS: typeof PRODUCTS = [
+  ["eclairage", "Lumatek", "Ballast électronique 400 W", 119, null, null],
+  ["eclairage", "SunSystem", "Ampoule HPS 600 W", 29.9, 34.9, null],
+  ["eclairage", "SunSystem", "Ampoule CFL croissance 125 W", 24.9, null, null],
+  ["eclairage", "Mars Hydro", "Panneau LED SP 3000 — 300 W", 219, 259, null],
+  ["eclairage", "Lumatek", "Réflecteur Adjust-A-Wings 600", 79, null, null],
+  ["chambres", "Secret Jardin", "Chambre Dark Street 150 × 150 × 200", 329, null, null],
+  ["chambres", "Secret Jardin", "Chambre Hydro Shoot 60 × 60 × 158", 99, null, "BEST_SELLER"],
+  ["chambres", "Secret Jardin", "Chambre Dark Room 60 × 60 × 140", 119, null, null],
+  ["chambres", "Secret Jardin", "Barre de suspension renforcée", 18.9, null, null],
+  ["chambres", "Secret Jardin", "Kit d'étanchéité de chambre", 9.9, null, null],
+  ["ventilation", "Prima Klima", "Filtre à charbon 150 × 500", 89, null, null],
+  ["ventilation", "Prima Klima", "Régulateur de vitesse 4 A", 39, null, null],
+  ["ventilation", "Winflex", "Gaine alu isolée Ø 125 — 10 m", 34.9, null, null],
+  ["ventilation", "Winflex", "Extracteur Revolution Stealth 100 mm", 119, null, null],
+  ["ventilation", "Ruck", "Ventilateur de gaine 125 mm", 74, 89, null],
+  ["ventilation", "Ruck", "Ventilateur oscillant à pied", 49, null, null],
+  ["ventilation", "Prima Klima", "Collier de serrage Ø 125 (x2)", 5.9, null, null],
+  ["controle", "GrowControl", "Thermostat + hygrostat digital", 45, null, null],
+  ["controle", "Bluelab", "Sonde EC/température", 59, null, null],
+  ["controle", "Bluelab", "Solution d'étalonnage pH 7.0", 14.9, null, null],
+  ["controle", "GrowControl", "Programmateur digital 3500 W", 17.9, null, null],
+  ["controle", "GrowControl", "Sonde CO₂ NDIR", 189, null, "NEW"],
+  ["accessoires", "Garden Highpro", "Ciseaux de précision courbes", 18.9, null, "BEST_SELLER"],
+  ["accessoires", "Garden Highpro", "Pulvérisateur 2 L", 12.9, null, null],
+  ["accessoires", "Garden Highpro", "Gants nitrile (x100)", 9.9, null, null],
+  ["accessoires", "Garden Highpro", "Sac de séchage 60 cm", 24.9, null, null],
+  ["accessoires", "Garden Highpro", "Bac de rétention 60 × 60", 21.9, null, null],
+];
+
+const ALL_PRODUCTS = [...PRODUCTS, ...EXTRA_PRODUCTS];
+
+// Phase 3 created this brand by hand as "sun-system"; slugify("SunSystem")
+// would give "sunsystem" and silently create a duplicate brand.
+const BRAND_SLUG_OVERRIDES: Record<string, string> = { SunSystem: "sun-system" };
+
 function slugify(text: string) {
   return text
     .normalize("NFD")
@@ -83,9 +121,9 @@ async function main() {
   }
 
   const brandIds = new Map<string, string>();
-  const brandNames = new Set(["SunSystem", "Secret Jardin", ...PRODUCTS.map((p) => p[1])]);
+  const brandNames = new Set(["SunSystem", "Secret Jardin", ...ALL_PRODUCTS.map((p) => p[1])]);
   for (const name of brandNames) {
-    const slug = slugify(name);
+    const slug = BRAND_SLUG_OVERRIDES[name] ?? slugify(name);
     const row = await prisma.brand.upsert({
       where: { slug },
       update: {},
@@ -95,7 +133,7 @@ async function main() {
   }
 
   // Products from the design mockup (no photos yet: cards render a placeholder).
-  for (const [subSlug, brand, name, price, compareAt, badge] of PRODUCTS) {
+  for (const [subSlug, brand, name, price, compareAt, badge] of ALL_PRODUCTS) {
     const slug = slugify(name);
     await prisma.product.upsert({
       where: { slug },

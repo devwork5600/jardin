@@ -2,17 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CategoryFiltersForm } from "@/components/category/category-filters-form";
-import { Pagination } from "@/components/category/pagination";
-import { ProductCard } from "@/components/category/product-card";
-import { getCategoryBySlug, getCategoryProducts } from "@/lib/catalog";
-import {
-  applyFilters,
-  paginate,
-  parseFilters,
-  parsePage,
-  serializeFilters,
-  sortProducts,
-} from "@/lib/category-filters";
+import { CategoryProductGrid } from "@/components/category/category-product-grid";
+import { getCategoryBySlug } from "@/lib/catalog";
+import { getListingPage } from "@/lib/category-listing";
+import { parseFilters, serializeFilters } from "@/lib/category-filters";
 
 export async function generateMetadata(
   props: PageProps<"/categorie/[slug]">,
@@ -50,24 +43,25 @@ export default async function CategoryPage(
   if (!category) notFound();
 
   const filters = parseFilters(query);
-  const activeSub = category.children.find((child) => child.slug === query.sub);
-
-  const allProducts = await getCategoryProducts(category);
-  const inScope = allProducts.filter(
-    (product) => !activeSub || product.categorySlug === activeSub.slug,
+  const { allProducts, inScope, activeSub, page } = await getListingPage(
+    category,
+    {
+      sub: typeof query.sub === "string" ? query.sub : undefined,
+      filters,
+      page: 1,
+    },
   );
+
   const brands = [
     ...new Map(
       inScope.flatMap((p) => (p.brand ? [[p.brand.slug, p.brand] as const] : [])),
     ).values(),
   ].sort((a, b) => a.name.localeCompare(b.name, "fr"));
 
-  const filtered = sortProducts(applyFilters(inScope, filters), filters.sort);
-  const { items, page, totalPages } = paginate(filtered, parsePage(query));
-
   const basePath = `/categorie/${category.slug}`;
-  const hrefFor = (extra: { sub?: string; page?: number }) => {
-    const search = serializeFilters(filters, extra);
+  const queryString = serializeFilters(filters, { sub: activeSub?.slug });
+  const hrefFor = (sub?: string) => {
+    const search = serializeFilters(filters, { sub });
     return search ? `${basePath}?${search}` : basePath;
   };
 
@@ -116,7 +110,7 @@ export default async function CategoryPage(
               return (
                 <Link
                   key={chip.slug ?? "all"}
-                  href={hrefFor({ sub: chip.slug ?? undefined })}
+                  href={hrefFor(chip.slug ?? undefined)}
                   className={`rounded-pill border px-[18px] py-2.5 text-[13px] font-semibold ${
                     active
                       ? "border-ink bg-ink text-ivory"
@@ -138,23 +132,13 @@ export default async function CategoryPage(
         defaultValues={filters}
         basePath={basePath}
         sub={activeSub?.slug}
-        countLabel={`${filtered.length} produit${filtered.length > 1 ? "s" : ""}`}
+        countLabel={`${page.total} produit${page.total > 1 ? "s" : ""}`}
       >
-        {items.length > 0 ? (
-          <div className="mt-7 grid grid-cols-[repeat(auto-fill,minmax(min(100%,230px),1fr))] gap-x-[22px] gap-y-8">
-            {items.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
-        ) : (
-          <p className="mt-10 text-[15px] text-text-tertiary">
-            Aucun produit ne correspond à ces filtres.
-          </p>
-        )}
-        <Pagination
-          page={page}
-          totalPages={totalPages}
-          hrefFor={(n) => hrefFor({ sub: activeSub?.slug, page: n })}
+        <CategoryProductGrid
+          key={queryString}
+          categorySlug={category.slug}
+          queryString={queryString}
+          initialPage={page}
         />
       </CategoryFiltersForm>
     </>

@@ -4,7 +4,7 @@ import type { CategoryProduct } from "@/lib/catalog";
 // Pure module (no Prisma): imported by both the server page and the client
 // filter form, so the same zod schema validates the URL and the form.
 
-export const PAGE_SIZE = 9;
+export const PAGE_SIZE = 12;
 
 const PRICE_VALUES = ["lt25", "25-100", "100-250", "gt250"] as const;
 const SORT_VALUES = ["pop", "asc", "desc"] as const;
@@ -72,7 +72,7 @@ export function parsePage(params: SearchParams) {
 // Default values are omitted so clean URLs stay clean.
 export function serializeFilters(
   filters: CategoryFiltersValues,
-  extra: { sub?: string; page?: number } = {},
+  extra: { sub?: string } = {},
 ) {
   const query = new URLSearchParams();
   if (extra.sub) query.set("sub", extra.sub);
@@ -80,7 +80,6 @@ export function serializeFilters(
   if (filters.prices.length) query.set("prix", filters.prices.join(","));
   if (!filters.inStock) query.set("stock", "0");
   if (filters.sort !== "pop") query.set("tri", filters.sort);
-  if (extra.page && extra.page > 1) query.set("page", String(extra.page));
   return query.toString();
 }
 
@@ -121,13 +120,11 @@ export function sortProducts(
   );
 }
 
-export function paginate<T>(items: T[], page: number) {
-  const totalPages = Math.max(1, Math.ceil(items.length / PAGE_SIZE));
-  const current = Math.min(page, totalPages);
-
+// Infinite scroll: page N is a fixed slice, and asking past the end yields an
+// empty page (no clamping, which would re-serve the last page's products).
+export function pageSlice<T>(items: T[], page: number) {
   return {
-    items: items.slice((current - 1) * PAGE_SIZE, current * PAGE_SIZE),
-    page: current,
-    totalPages,
+    items: items.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE),
+    nextPage: page * PAGE_SIZE < items.length ? page + 1 : null,
   };
 }
