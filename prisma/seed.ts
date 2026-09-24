@@ -249,10 +249,33 @@ async function main() {
     },
   });
 
-  // The placeholder photos seeded in Phase 3 were remote placehold.co URLs.
-  await prisma.productImage.deleteMany({
-    where: { url: { startsWith: "https://placehold.co" } },
+  // Placeholder photos (placehold.co) for products that have none, so cards
+  // and the gallery can be judged before real pictures exist. Never touches a
+  // product that already has an image. Sizes/tones vary on purpose: portrait,
+  // square and landscape sources all have to survive object-cover.
+  const TONES = ["DCE8E0", "E1EBDD", "EFE3DA", "D8DDD3", "E3E0D9"];
+  const SIZES = [[800, 1000], [1000, 1000], [1200, 900], [800, 1000], [900, 1200]];
+  const withoutImages = await prisma.product.findMany({
+    where: { images: { none: {} } },
+    select: { id: true, name: true, slug: true },
+    orderBy: { createdAt: "asc" },
   });
+  for (const [index, product] of withoutImages.entries()) {
+    const count = product.slug === flagshipSlug ? 4 : index % 5 === 0 ? 3 : 1;
+    const [width, height] = SIZES[index % SIZES.length];
+    const tone = TONES[index % TONES.length];
+    await prisma.productImage.createMany({
+      data: Array.from({ length: count }, (_, position) => {
+        const view = count === 4 && position === 3 ? "En situation" : `Vue ${position + 1}`;
+        const label = encodeURIComponent(`${product.name}\n${view}`).replace(/%20/g, "+");
+        return {
+          productId: product.id,
+          position,
+          url: `https://placehold.co/${width}x${height}/${tone}/16261D/png?text=${label}`,
+        };
+      }),
+    });
+  }
 
   await prisma.loyaltyTier.upsert({
     where: { name: "Sève" },
