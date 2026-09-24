@@ -1,3 +1,4 @@
+import { useSyncExternalStore } from "react";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import {
@@ -81,3 +82,14 @@ export const useCartStore = create<CartState>()(
 
 export const selectCartCount = (state: CartState) =>
   state.items.reduce((total, item) => total + item.quantity, 0);
+
+// False until the persisted cart has been read from localStorage (see
+// <Providers>). Pages must wait for it: before that the cart is just empty,
+// which is not the same thing as "the customer has nothing in their cart".
+export function useCartHydrated() {
+  return useSyncExternalStore(
+    (onChange) => useCartStore.persist.onFinishHydration(onChange),
+    () => useCartStore.persist.hasHydrated(),
+    () => false,
+  );
+}

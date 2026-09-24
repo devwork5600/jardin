@@ -32,6 +32,8 @@ export type PricedCart = {
   canOrder: boolean;
 };
 
+export type PricedCartResponse = PricedCart & { signedIn: boolean };
+
 // The single source of truth for what a cart costs. The client only sends
 // {variantId, quantity}; names, prices, stock and the loyalty discount are all
 // read here, both to display the cart and again when the order is created.
