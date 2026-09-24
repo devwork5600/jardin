@@ -8,6 +8,7 @@ import { authClient } from "@/lib/auth-client";
 const ITEMS = [
   { label: "Tableau de bord", href: "/compte", exact: true },
   { label: "Commandes", href: "/compte/commandes", exact: false },
+  { label: "Mes informations", href: "/compte/informations", exact: false },
 ];
 
 export function AccountNav() {

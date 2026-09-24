@@ -216,6 +216,7 @@ model User {
   updatedAt       DateTime   @updatedAt
   role            String?    @default("CUSTOMER")
   totalSpentCents Int?       @default(0)
+  phone           String?
   sessions        Session[]
   accounts        Account[]
   orders          Order[]
