@@ -1,7 +1,6 @@
 "use client";
 
 import type { ReactNode } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -13,6 +12,7 @@ import {
   type CheckoutFormValues,
 } from "@/lib/validators/checkout-schema";
 import { CheckoutRecap } from "./checkout-recap";
+import { EmptyCart } from "./empty-cart";
 import { usePricedCart } from "./use-priced-cart";
 
 type Props = {
@@ -112,25 +112,7 @@ export function CheckoutForm({ signedIn, defaultValues, pickupDays }: Props) {
   // announce "empty cart" for something that just hasn't loaded yet.
   if (!hydrated) return <CheckoutSkeleton />;
 
-  if (items.length === 0) {
-    return (
-      <div className="mt-10 rounded-[20px] border border-border-soft bg-surface p-[clamp(28px,5vw,56px)] text-center">
-        <h2 className="font-serif text-[28px] font-normal text-ink">
-          Votre panier est vide
-        </h2>
-        <p className="mx-auto mt-3 max-w-[44ch] text-[15px] leading-[1.7] text-text-secondary">
-          Ajoutez des produits pour préparer votre commande, à retirer en
-          boutique à Vannes.
-        </p>
-        <Link
-          href="/categorie/culture-indoor"
-          className="mt-7 inline-block rounded-[10px] bg-ink px-6 py-[15px] text-sm font-semibold text-ivory"
-        >
-          Découvrir la boutique
-        </Link>
-      </div>
-    );
-  }
+  if (items.length === 0) return <EmptyCart />;
 
   return (
     <form

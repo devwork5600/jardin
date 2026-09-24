@@ -5,6 +5,7 @@ import { useCartStore } from "@/lib/cart";
 import { formatPrice } from "@/lib/format";
 import type { PricedLine } from "@/lib/cart-pricing";
 import type { CheckoutFormValues } from "@/lib/validators/checkout-schema";
+import { CartTotals } from "./cart-totals";
 import type { usePricedCart } from "./use-priced-cart";
 
 type Props = {
@@ -134,7 +135,6 @@ export function CheckoutRecap({
   error,
 }: Props) {
   const cart = pricing.data;
-  const discount = cart?.loyalty && cart.loyalty.discountCents > 0 ? cart.loyalty : null;
   const cardSelected = method === "CARD";
   const disabled = !cart?.canOrder || submitting || cardSelected;
 
@@ -161,35 +161,7 @@ export function CheckoutRecap({
         </p>
       )}
 
-      <div className="mt-[22px] flex flex-col gap-2.5 border-t border-ivory/15 pt-[18px] text-sm">
-        <div className="flex justify-between text-on-dark-secondary">
-          <span>Sous-total</span>
-          <span>{cart ? formatPrice(cart.subtotalCents) : "—"}</span>
-        </div>
-        {discount && (
-          <div className="flex justify-between text-lime">
-            <span>Remise fidélité ({discount.discountPct} %)</span>
-            <span>− {formatPrice(discount.discountCents)}</span>
-          </div>
-        )}
-        {!signedIn && (
-          <div className="text-[12.5px] text-lime">
-            Connectez-vous pour profiter de vos prix e-drive et de la remise
-            fidélité.
-          </div>
-        )}
-        <div className="flex justify-between text-on-dark-secondary">
-          <span>Retrait en boutique</span>
-          <span>Gratuit</span>
-        </div>
-      </div>
-
-      <div className="mt-[18px] flex items-baseline justify-between border-t border-ivory/15 pt-[18px]">
-        <span className="text-sm">Total TTC</span>
-        <span className="font-serif text-[30px]">
-          {cart ? formatPrice(cart.totalCents) : "—"}
-        </span>
-      </div>
+      <CartTotals cart={cart} signedIn={signedIn} />
 
       {signedIn ? (
         <button
