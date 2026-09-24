@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
-import { useCart } from "@/lib/cart";
+import { selectCartCount, useCartStore } from "@/lib/cart";
 
 const NAV_LINKS = [
   { label: "Accueil", href: "/" },
@@ -16,7 +16,7 @@ const NAV_LINKS = [
 export function SiteHeader() {
   const pathname = usePathname();
   const { data: session } = authClient.useSession();
-  const { count: cartCount } = useCart();
+  const cartCount = useCartStore(selectCartCount);
 
   return (
     <header className="sticky top-0 z-30 border-b border-border-soft bg-ivory/92 backdrop-blur-md">

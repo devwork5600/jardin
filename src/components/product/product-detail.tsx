@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { addToCart } from "@/lib/cart";
+import { useCartStore } from "@/lib/cart";
 import { formatPrice } from "@/lib/format";
 import {
   makeAddToCartSchema,
@@ -40,6 +40,7 @@ export function ProductDetail({
 }: Props) {
   const [activeImage, setActiveImage] = useState(0);
   const [added, setAdded] = useState(false);
+  const addToCart = useCartStore((state) => state.addItem);
 
   const schema = useMemo(() => makeAddToCartSchema(variants), [variants]);
   const { control, handleSubmit, setValue } = useForm<AddToCartValues>({
