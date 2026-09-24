@@ -150,6 +150,9 @@ model Order {
   paymentMethod          PaymentMethod
   pickupDate             DateTime
   pickupSlot             String
+  contactName            String
+  contactEmail           String
+  contactPhone           String
   subtotalCents          Int
   loyaltyDiscountCents   Int           @default(0)
   promotionId            String?
