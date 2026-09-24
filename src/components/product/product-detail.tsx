@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { FavoriteButton } from "@/components/favorites/favorite-button";
 import { useCartStore } from "@/lib/cart";
 import { formatPrice } from "@/lib/format";
 import {
@@ -20,6 +21,7 @@ type Variant = {
 };
 
 type Props = {
+  productId: string;
   name: string;
   eyebrow: string;
   summary: string;
@@ -31,6 +33,7 @@ type Props = {
 // Gallery and purchase panel live in one client component: the promo badge on
 // the main image depends on the variant picked in the panel.
 export function ProductDetail({
+  productId,
   name,
   eyebrow,
   summary,
@@ -125,9 +128,16 @@ export function ProductDetail({
         className="flex min-w-0 flex-col gap-6 min-[900px]:sticky min-[900px]:top-24"
       >
         <div>
-          <span className="text-[11px] font-bold tracking-[0.2em] text-copper uppercase">
-            {eyebrow}
-          </span>
+          <div className="flex items-center justify-between gap-3">
+            <span className="text-[11px] font-bold tracking-[0.2em] text-copper uppercase">
+              {eyebrow}
+            </span>
+            <FavoriteButton
+              productId={productId}
+              productName={name}
+              className="border border-border"
+            />
+          </div>
           <h1 className="mt-3 font-serif text-[clamp(32px,4vw,48px)] leading-[1.08] font-normal tracking-[-0.02em] text-ink">
             {title}
             {accent && <em> {accent}</em>}
