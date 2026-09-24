@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { FavoriteButton } from "@/components/favorites/favorite-button";
 import type { CardBadge, ProductCardData } from "@/lib/catalog";
 import { formatPrice } from "@/lib/format";
 
@@ -9,37 +10,51 @@ const BADGES: Record<CardBadge, { label: string; className: string }> = {
   ADVICE: { label: "Conseil", className: "bg-nav-inactive" },
 };
 
-export function ProductCard({ product }: { product: ProductCardData }) {
+export function ProductCard({
+  product,
+  favorited,
+}: {
+  product: ProductCardData;
+  favorited?: boolean;
+}) {
   const href = `/produit/${product.slug}`;
   const badge = product.badge ? BADGES[product.badge] : null;
 
   return (
     <div className="flex min-w-0 flex-col gap-3">
-      <Link
-        href={href}
-        className="relative block aspect-[4/5] overflow-hidden rounded-2xl bg-ivory-alt"
-      >
-        {product.imageUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={product.imageUrl}
-            alt={product.name}
-            loading="lazy"
-            className="absolute inset-0 h-full w-full object-cover"
-          />
-        ) : (
-          <span className="absolute inset-0 flex items-center justify-center text-xs text-text-faint">
-            Photo à venir
-          </span>
-        )}
-        {badge && (
-          <span
-            className={`pointer-events-none absolute top-3 left-3 rounded-pill px-2.5 py-[5px] text-[10px] font-bold tracking-[0.12em] text-white uppercase ${badge.className}`}
-          >
-            {badge.label}
-          </span>
-        )}
-      </Link>
+      <div className="relative">
+        <Link
+          href={href}
+          className="relative block aspect-[4/5] overflow-hidden rounded-2xl bg-ivory-alt"
+        >
+          {product.imageUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={product.imageUrl}
+              alt={product.name}
+              loading="lazy"
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+          ) : (
+            <span className="absolute inset-0 flex items-center justify-center text-xs text-text-faint">
+              Photo à venir
+            </span>
+          )}
+          {badge && (
+            <span
+              className={`pointer-events-none absolute top-3 left-3 rounded-pill px-2.5 py-[5px] text-[10px] font-bold tracking-[0.12em] text-white uppercase ${badge.className}`}
+            >
+              {badge.label}
+            </span>
+          )}
+        </Link>
+        <FavoriteButton
+          productId={product.id}
+          productName={product.name}
+          initialActive={favorited}
+          className="absolute top-3 right-3"
+        />
+      </div>
 
       <div className="flex flex-col gap-1">
         {product.brand && (

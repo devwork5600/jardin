@@ -64,6 +64,7 @@ export default async function ProductPage(props: PageProps<"/produit/[slug]">) {
         </nav>
 
         <ProductDetail
+          productId={product.id}
           name={product.name}
           eyebrow={[brand?.name, category.name].filter(Boolean).join(" · ")}
           summary={summary}

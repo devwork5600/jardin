@@ -3,6 +3,7 @@ import { headers } from "next/headers";
 import { CheckoutForm } from "@/components/checkout/checkout-form";
 import { CheckoutStepper } from "@/components/checkout/checkout-stepper";
 import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 import { getPickupDays } from "@/lib/shop-hours";
 
 export const metadata: Metadata = {
@@ -13,6 +14,9 @@ export default async function PaiementPage() {
   const session = await auth.api.getSession({ headers: await headers() });
   const user = session?.user;
   const pickupDays = getPickupDays();
+  const phone = user
+    ? ((await prisma.user.findUnique({ where: { id: user.id }, select: { phone: true } }))?.phone ?? "")
+    : "";
   const [firstName = "", ...lastName] = (user?.name ?? "").split(" ");
 
   return (
@@ -31,7 +35,7 @@ export default async function PaiementPage() {
           firstName,
           lastName: lastName.join(" "),
           email: user?.email ?? "",
-          phone: "",
+          phone,
           pickupDate: pickupDays[0]?.iso ?? "",
           paymentMethod: "ON_PICKUP",
         }}
