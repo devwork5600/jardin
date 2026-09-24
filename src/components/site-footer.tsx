@@ -15,7 +15,7 @@ const FOOTER_COLUMNS = [
     links: [
       { label: "Mon compte", href: "/compte" },
       { label: "Connexion", href: "/connexion" },
-      { label: "Panier", href: "/paiement" },
+      { label: "Panier", href: "/panier" },
     ],
   },
   {

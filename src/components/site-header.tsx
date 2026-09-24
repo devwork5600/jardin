@@ -55,7 +55,7 @@ export function SiteHeader() {
             {session ? "Mon compte" : "Connexion"}
           </Link>
           <Link
-            href="/paiement"
+            href="/panier"
             className="flex items-center gap-1.5 text-ink-logo"
           >
             Panier
