@@ -17,6 +17,24 @@ export type CategoryProduct = {
   createdAt: Date;
 };
 
+// What a card needs on the wire (JSON-safe: no Date).
+export type ProductCardData = Omit<CategoryProduct, "createdAt">;
+
+export function toCardData(product: CategoryProduct): ProductCardData {
+  return {
+    id: product.id,
+    slug: product.slug,
+    name: product.name,
+    brand: product.brand,
+    categorySlug: product.categorySlug,
+    badge: product.badge,
+    priceCents: product.priceCents,
+    compareAtCents: product.compareAtCents,
+    inStock: product.inStock,
+    imageUrl: product.imageUrl,
+  };
+}
+
 const cardInclude = {
   brand: { select: { name: true, slug: true } },
   category: { select: { slug: true } },
