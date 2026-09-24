@@ -139,11 +139,11 @@ export function ProductDetail({
 
         <div className="flex flex-wrap items-baseline gap-3">
           <span className="font-serif text-[34px] text-ink">
-            {formatPrice(variant.priceCents)}
+            {formatPrice(variant.priceCents * quantity)}
           </span>
           {variant.compareAtCents && (
             <span className="text-[15px] text-text-faint line-through">
-              {formatPrice(variant.compareAtCents)}
+              {formatPrice(variant.compareAtCents * quantity)}
             </span>
           )}
           <span className="rounded-pill bg-status-open-bg px-2.5 py-[5px] text-xs font-semibold text-status-open-text">
