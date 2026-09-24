@@ -57,7 +57,11 @@ export function ProductDetail({
       ? Math.round((1 - variant.priceCents / variant.compareAtCents) * 100)
       : null;
 
+  // Design: "Panneau LED TS 1000 *150 W*" — with several variants the italic
+  // accent is the selected one; otherwise whatever follows a " — " in the name.
   const [title, ...titleRest] = name.split(" — ");
+  const accent =
+    variants.length > 1 ? variant.label : titleRest.join(" — ") || null;
 
   const selectVariant = (next: Variant) => {
     setValue("variantId", next.id);
@@ -126,7 +130,7 @@ export function ProductDetail({
           </span>
           <h1 className="mt-3 font-serif text-[clamp(32px,4vw,48px)] leading-[1.08] font-normal tracking-[-0.02em] text-ink">
             {title}
-            {titleRest.length > 0 && <em> {titleRest.join(" — ")}</em>}
+            {accent && <em> {accent}</em>}
           </h1>
           <p className="mt-3.5 text-[15px] leading-[1.7] text-pretty text-text-secondary">
             {summary}
