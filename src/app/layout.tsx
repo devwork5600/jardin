@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Noto_Serif, Manrope } from "next/font/google";
+import { Providers } from "@/components/providers";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import "./globals.css";
@@ -29,9 +30,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${notoSerif.variable} ${manrope.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <SiteHeader />
-        <main className="flex min-h-screen flex-1 flex-col">{children}</main>
-        <SiteFooter />
+        <Providers>
+          <SiteHeader />
+          <main className="flex min-h-screen flex-1 flex-col">{children}</main>
+          <SiteFooter />
+        </Providers>
       </body>
     </html>
   );
