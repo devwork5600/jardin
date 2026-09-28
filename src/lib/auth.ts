@@ -1,8 +1,11 @@
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { magicLink } from "better-auth/plugins/magic-link";
-import { Resend } from "resend";
+import { createElement } from "react";
+import { SignInEmail } from "@/emails/sign-in";
+import { sendEmail } from "./email";
 import { prisma } from "./prisma";
+import { siteUrl } from "./site-url";
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
@@ -21,13 +24,13 @@ export const auth = betterAuth({
   plugins: [
     magicLink({
       sendMagicLink: async ({ email, url }) => {
-        const resend = new Resend(process.env.RESEND_API_KEY);
-        await resend.emails.send({
-          from: "Jardin Indoor <connexion@jardin-indoor.com>",
+        const sent = await sendEmail({
           to: email,
-          subject: "Votre lien de connexion — Jardin Indoor",
-          html: `<p>Cliquez pour vous connecter : <a href="${url}">${url}</a></p><p>Ce lien expire dans 5 minutes.</p>`,
+          subject: "Votre lien de connexion — Feuilles et épines",
+          react: createElement(SignInEmail, { baseUrl: siteUrl(), url }),
         });
+        // Better an honest error than a "check your inbox" for a mail that never left.
+        if (!sent) throw new Error("Impossible d'envoyer l'e-mail de connexion");
       },
     }),
   ],

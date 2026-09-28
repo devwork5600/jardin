@@ -1,7 +1,7 @@
 import type { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 
-const orderWithItems = {
+export const orderWithItems = {
   items: {
     include: {
       variant: {

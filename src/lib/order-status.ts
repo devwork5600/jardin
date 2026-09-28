@@ -4,6 +4,11 @@ export const ORDER_STATUS: Record<
   OrderStatus,
   { label: string; className: string; active: boolean }
 > = {
+  EN_ATTENTE_PAIEMENT: {
+    label: "En attente de paiement",
+    className: "bg-ivory-alt text-text-secondary",
+    active: true,
+  },
   EN_PREPARATION: {
     label: "En préparation",
     className: "bg-[#f3e6dc] text-copper",
