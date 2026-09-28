@@ -5,12 +5,14 @@ import { CheckoutStepper } from "@/components/checkout/checkout-stepper";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { getPickupDays } from "@/lib/shop-hours";
+import { isStripeConfigured, isStripeTestMode } from "@/lib/stripe";
 
 export const metadata: Metadata = {
-  title: "Finaliser ma commande — Jardin Indoor",
+  title: "Finaliser ma commande — Feuilles et épines",
 };
 
-export default async function PaiementPage() {
+export default async function PaiementPage(props: PageProps<"/paiement">) {
+  const { annule } = await props.searchParams;
   const session = await auth.api.getSession({ headers: await headers() });
   const user = session?.user;
   const pickupDays = getPickupDays();
@@ -30,6 +32,9 @@ export default async function PaiementPage() {
 
       <CheckoutForm
         signedIn={user !== undefined}
+        cardEnabled={isStripeConfigured()}
+        testMode={isStripeTestMode()}
+        canceled={annule === "1"}
         pickupDays={pickupDays}
         defaultValues={{
           firstName,

@@ -4,13 +4,14 @@ import { ShopStatus } from "@/components/home/shop-status";
 import { OrderStatusPill } from "@/components/orders/order-status-pill";
 import { OrdersList } from "@/components/orders/orders-list";
 import { formatPickupDay, formatPrice } from "@/lib/format";
+import { userIsAdmin } from "@/lib/admin";
 import { getLoyaltyStatus } from "@/lib/loyalty";
 import { getUserOrders } from "@/lib/order-queries";
 import { ORDER_STATUS } from "@/lib/order-status";
 import { prisma } from "@/lib/prisma";
 import { requireSession } from "@/lib/session";
 
-export const metadata: Metadata = { title: "Mon compte — Jardin Indoor" };
+export const metadata: Metadata = { title: "Mon compte — Feuilles et épines" };
 
 const LABEL = "text-[10.5px] font-bold tracking-[0.2em] text-text-muted uppercase";
 const CARD = "rounded-[20px] border border-border-soft bg-surface p-6";
@@ -31,6 +32,14 @@ export default async function CompteDashboardPage() {
 
   return (
     <>
+      {userIsAdmin(user) && (
+        <Link
+          href="/admin/commandes"
+          className="mb-[22px] flex items-center justify-between gap-3 rounded-[14px] border border-border bg-ivory-alt px-5 py-3.5 text-[14px] font-semibold text-ink"
+        >
+          Espace admin : gérer les commandes <span aria-hidden>→</span>
+        </Link>
+      )}
       <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,280px),1fr))] gap-[22px]">
         {loyalty.current && (
           <section className="col-span-full grid grid-cols-[repeat(auto-fit,minmax(min(100%,240px),1fr))] items-end gap-7 rounded-block bg-green-deep p-[clamp(24px,4vw,40px)] text-ivory">
@@ -108,7 +117,7 @@ export default async function CompteDashboardPage() {
                 Vos prochaines commandes à retirer apparaîtront ici.
               </p>
               <Link
-                href="/categorie/culture-indoor"
+                href="/categorie/cactus-succulentes"
                 className="mt-3.5 inline-block text-[13px] font-bold text-copper"
               >
                 Parcourir la boutique →
@@ -120,18 +129,18 @@ export default async function CompteDashboardPage() {
         <section className={CARD}>
           <span className={LABEL}>Retrait</span>
           <div className="mt-3 font-serif text-[22px] text-ink">
-            Jardin Indoor Vannes
+            Feuilles et épines Vannes
           </div>
           <p className="mt-1.5 text-[13.5px] leading-[1.55] text-text-tertiary">
-            36 av. Gontran Bienvenu
+            12 rue du Cactus
           </p>
           <ShopStatus />
           <div>
             <a
-              href="tel:0297499509"
+              href="tel:0199005656"
               className="mt-3.5 inline-block text-[13px] font-bold text-copper"
             >
-              02 97 49 95 09 →
+              01 99 00 56 56 →
             </a>
           </div>
         </section>

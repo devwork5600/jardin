@@ -1,4 +1,5 @@
 import { randomInt } from "node:crypto";
+import type { PaymentMethod } from "@/generated/prisma/client";
 import { priceCart } from "@/lib/cart-pricing";
 import { prisma } from "@/lib/prisma";
 import { getPickupDays } from "@/lib/shop-hours";
@@ -14,21 +15,22 @@ function generateOrderNumber() {
     { length: 8 },
     () => ORDER_NUMBER_ALPHABET[randomInt(ORDER_NUMBER_ALPHABET.length)],
   ).join("");
-  return `JI-${random}`;
+  return `FE-${random}`;
 }
 
-type PickupOrderInput = {
+type OrderInput = {
   userId: string;
   contact: { name: string; email: string; phone: string };
   pickupDate: string; // YYYY-MM-DD, must be one of getPickupDays()
   items: CartItem[];
 };
 
-// Pay-at-pickup order. There is no payment to wait for, so stock is taken
-// right here, in the same transaction that creates the order. Everything
-// that matters (prices, stock, loyalty, allowed pickup days) is recomputed
-// on the server: the client's numbers are never trusted.
-export async function createPickupOrder(input: PickupOrderInput) {
+// Stock is taken right here, in the same transaction that creates the order,
+// whatever the payment method: a card order waits for its payment with the
+// stock already reserved (and gives it back if the payment never comes).
+// Everything that matters (prices, stock, loyalty, allowed pickup days) is
+// recomputed on the server: the client's numbers are never trusted.
+async function createOrder(input: OrderInput, paymentMethod: PaymentMethod) {
   const pickup = getPickupDays().find((day) => day.iso === input.pickupDate);
   if (!pickup) throw new OrderError("Ce jour de retrait n'est plus disponible.");
 
@@ -66,8 +68,8 @@ export async function createPickupOrder(input: PickupOrderInput) {
       data: {
         orderNumber: generateOrderNumber(),
         userId: input.userId,
-        status: "EN_PREPARATION",
-        paymentMethod: "ON_PICKUP",
+        status: paymentMethod === "CARD" ? "EN_ATTENTE_PAIEMENT" : "EN_PREPARATION",
+        paymentMethod,
         pickupDate: new Date(`${pickup.iso}T00:00:00.000Z`),
         pickupSlot: pickup.hours,
         subtotalCents: cart.subtotalCents,
@@ -88,3 +90,62 @@ export async function createPickupOrder(input: PickupOrderInput) {
     });
   });
 }
+
+// Pay at pickup: the order is in preparation right away.
+export const createPickupOrder = (input: OrderInput) =>
+  createOrder(input, "ON_PICKUP");
+
+// Card: the order waits for Stripe (see markOrderPaid / cancelUnpaidOrder).
+export const createCardOrder = (input: OrderInput) =>
+  createOrder(input, "CARD");
+
+// Gives an unpaid card order up: cancelled, stock back on the shelf. The status
+// change is the guard, so it happens at most once and never on an order that
+// got paid in the meantime; if it loses that race it does nothing.
+export async function cancelUnpaidOrder(orderId: string) {
+  return prisma.$transaction(async (tx) => {
+    const { count } = await tx.order.updateMany({
+      where: { id: orderId, status: "EN_ATTENTE_PAIEMENT" },
+      data: { status: "ANNULEE" },
+    });
+    if (count === 0) return false;
+
+    const items = await tx.orderItem.findMany({ where: { orderId } });
+    for (const item of items) {
+      await tx.productVariant.update({
+        where: { id: item.variantId },
+        data: { stock: { increment: item.quantity } },
+      });
+    }
+    return true;
+  });
+}
+
+export type PaymentOutcome =
+  | "PAID" // this call moved the order to EN_PREPARATION
+  | "ALREADY_PAID" // a retry, or the other path (webhook / confirmation page) got there first
+  | "CANCELLED_BEFORE_PAYMENT" // the order was given up, but the customer paid: refund them
+  | "UNKNOWN_ORDER";
+
+// Stripe says the session is paid. Same guard as above, mirrored: only an order
+// still waiting can become paid, so webhook retries and the page-load check
+// can both call this safely.
+export async function markOrderPaid(
+  stripeSessionId: string,
+  stripePaymentIntentId?: string,
+): Promise<PaymentOutcome> {
+  const { count } = await prisma.order.updateMany({
+    where: { stripeSessionId, status: "EN_ATTENTE_PAIEMENT" },
+    // Keep the PaymentIntent: it is what a later refund needs.
+    data: { status: "EN_PREPARATION", paidAt: new Date(), stripePaymentIntentId },
+  });
+  if (count === 1) return "PAID";
+
+  const order = await prisma.order.findUnique({
+    where: { stripeSessionId },
+    select: { paidAt: true },
+  });
+  if (!order) return "UNKNOWN_ORDER";
+  return order.paidAt ? "ALREADY_PAID" : "CANCELLED_BEFORE_PAYMENT";
+}
+

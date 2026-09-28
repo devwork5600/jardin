@@ -12,7 +12,7 @@ export function OrderInfo({ order }: { order: OrderWithItems }) {
           {formatPickupDay(order.pickupDate)}, {order.pickupSlot}
           <br />
           <span className="text-text-secondary">
-            36 av. Gontran Bienvenu, 56000 Vannes · 02 97 49 95 09
+            12 rue du Cactus, 56000 Vannes · 01 99 00 56 56
           </span>
         </dd>
       </div>
@@ -21,7 +21,9 @@ export function OrderInfo({ order }: { order: OrderWithItems }) {
         <dd className="mt-1 text-ink">
           {order.paymentMethod === "ON_PICKUP"
             ? "Au retrait, par CB ou en espèces"
-            : "Carte bancaire en ligne"}
+            : order.paidAt
+              ? "Carte bancaire en ligne — payée"
+              : "Carte bancaire en ligne — en attente de paiement"}
         </dd>
       </div>
       <div>

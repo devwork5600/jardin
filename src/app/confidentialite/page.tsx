@@ -9,7 +9,7 @@ import {
 import { LEGAL } from "@/lib/legal";
 
 export const metadata: Metadata = {
-  title: "Politique de confidentialité — Jardin Indoor",
+  title: "Politique de confidentialité — Feuilles et épines",
   alternates: { canonical: "/confidentialite" },
 };
 
@@ -101,7 +101,17 @@ export default function ConfidentialitePage() {
           </li>
           <li>
             <strong className="font-medium text-ink">Resend</strong> — envoi de
-            l’e-mail contenant votre lien de connexion (États-Unis).
+            l’e-mail contenant votre lien de connexion et des e-mails relatifs
+            à votre commande (confirmation, commande prête), à l’adresse que
+            vous avez indiquée (États-Unis).
+          </li>
+          <li>
+            <strong className="font-medium text-ink">Stripe</strong> — paiement
+            en ligne par carte, si vous choisissez ce mode de paiement : Stripe
+            reçoit les informations de votre carte sur sa propre page, et
+            l’adresse e-mail et le montant de votre commande (États-Unis).
+            Sur ce site de démonstration, seules des cartes de test sont
+            utilisées.
           </li>
           <li>
             <strong className="font-medium text-ink">GitHub, Google</strong> —
