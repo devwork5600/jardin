@@ -3,7 +3,7 @@ import { ProfileForm } from "@/components/account/profile-form";
 import { prisma } from "@/lib/prisma";
 import { requireSession } from "@/lib/session";
 
-export const metadata: Metadata = { title: "Mes informations — Jardin Indoor" };
+export const metadata: Metadata = { title: "Mes informations — Feuilles et épines" };
 
 export default async function InformationsPage() {
   const { user } = await requireSession("/compte/informations");

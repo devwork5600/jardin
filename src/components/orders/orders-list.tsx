@@ -30,7 +30,7 @@ export function OrdersList({
         <p className="mt-4 text-[14.5px] text-text-tertiary">
           Vous n&apos;avez pas encore passé de commande.{" "}
           <Link
-            href="/categorie/culture-indoor"
+            href="/categorie/cactus-succulentes"
             className="font-semibold text-ink underline underline-offset-2"
           >
             Parcourir la boutique

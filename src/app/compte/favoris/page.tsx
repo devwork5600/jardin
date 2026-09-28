@@ -5,7 +5,7 @@ import { SeedFavorites } from "@/components/favorites/seed-favorites";
 import { getFavoriteProducts, toCardData } from "@/lib/catalog";
 import { requireSession } from "@/lib/session";
 
-export const metadata: Metadata = { title: "Mes favoris — Jardin Indoor" };
+export const metadata: Metadata = { title: "Mes favoris — Feuilles et épines" };
 
 export default async function FavorisPage() {
   const { user } = await requireSession("/compte/favoris");
@@ -21,7 +21,7 @@ export default async function FavorisPage() {
           Ajoutez des produits depuis la boutique pour les retrouver ici.
         </p>
         <Link
-          href="/categorie/culture-indoor"
+          href="/categorie/cactus-succulentes"
           className="mt-5 inline-block rounded-[10px] bg-copper px-[22px] py-3.5 text-xs font-bold tracking-[0.12em] text-white uppercase"
         >
           Parcourir la boutique

@@ -2,7 +2,7 @@
 // it, so the identity can't drift between mentions légales, CGV and the
 // privacy policy.
 export const LEGAL = {
-  siteName: "Jardin Indoor",
+  siteName: "Feuilles et épines",
   editorName: "Adrien Delagneau",
   contactEmail: "devwork5600@gmail.com",
   officialSiteUrl: "https://jardin-indoor.com",

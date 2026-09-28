@@ -2,15 +2,16 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { LogoMark } from "@/components/logo-mark";
 import { authClient } from "@/lib/auth-client";
 import { selectCartCount, useCartStore } from "@/lib/cart";
 
 const NAV_LINKS = [
   { label: "Accueil", href: "/" },
-  { label: "Culture indoor", href: "/categorie/culture-indoor" },
-  { label: "Outdoor", href: "/categorie/outdoor" },
-  { label: "CBD", href: "/categorie/cbd-cbg" },
-  { label: "Vinyles", href: "/categorie/vinyles" },
+  { label: "Cactus & succulentes", href: "/categorie/cactus-succulentes" },
+  { label: "Bonsaï", href: "/categorie/bonsai" },
+  { label: "Plantes", href: "/categorie/plantes-interieur" },
+  { label: "Pots & jardinage", href: "/categorie/pots-jardinage" },
 ];
 
 export function SiteHeader() {
@@ -23,9 +24,10 @@ export function SiteHeader() {
       <div className="container-page flex flex-wrap items-center justify-between gap-x-6 gap-y-3.5 py-[18px]">
         <Link
           href="/"
-          className="whitespace-nowrap font-serif text-xl font-semibold italic text-ink-logo"
+          className="flex items-center gap-2.5 whitespace-nowrap font-serif text-xl font-semibold italic text-ink-logo"
         >
-          Jardin Indoor
+          <LogoMark className="h-[30px] w-[22px] shrink-0" />
+          Feuilles et épines
         </Link>
 
         <nav className="flex flex-wrap gap-x-7 gap-y-1.5 font-serif text-sm">

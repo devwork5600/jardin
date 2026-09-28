@@ -1,9 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
-import indoorImg from "@/assets/images/home/indoor.jpeg";
-import cbdImg from "@/assets/images/home/cbd.jpeg";
-import outdoorImg from "@/assets/images/home/outdoor.jpeg";
-import vinylesImg from "@/assets/images/home/vinyles.jpeg";
+import cactusImg from "@/assets/images/home/cactus.jpeg";
+import bonsaiImg from "@/assets/images/home/bonsai.jpeg";
+import plantesImg from "@/assets/images/home/plantes.jpeg";
+import potsImg from "@/assets/images/home/pots.jpeg";
+import { IMG_ZOOM } from "@/lib/image-zoom";
 
 export function UniversSection() {
   return (
@@ -12,11 +13,11 @@ export function UniversSection() {
         <div>
           <span className="eyebrow">Nos univers</span>
           <h2 className="mt-3 font-serif text-[clamp(32px,4vw,52px)] leading-[1.05] font-normal tracking-[-0.02em] text-ink">
-            La sélection <em>Jardin Indoor</em>
+            La sélection <em>Feuilles et épines</em>
           </h2>
         </div>
         <Link
-          href="/categorie/culture-indoor"
+          href="/categorie/cactus-succulentes"
           className="border-b border-ink pb-[3px] text-[13px] font-semibold text-ink"
         >
           Voir toute la boutique
@@ -24,25 +25,25 @@ export function UniversSection() {
       </div>
 
       <div className="mt-10 flex flex-wrap gap-[22px]">
-        <div className="relative min-h-[440px] min-w-0 flex-[2_1_520px] overflow-hidden rounded-[20px] bg-[#2A3B31]">
+        <div className="group relative min-h-[440px] min-w-0 flex-[2_1_520px] overflow-hidden rounded-[20px] bg-[#2A3B31]">
           <Image
-            src={indoorImg}
-            alt="Tente de culture indoor équipée, entourée d'étagères de matériel"
+            src={cactusImg}
+            alt="Étagère de cactus et de succulentes en pots de terre cuite"
             fill
             sizes="(min-width: 1024px) 800px, 100vw"
-            className="object-cover"
+            className={IMG_ZOOM}
           />
           <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(15,28,21,0)_35%,rgba(15,28,21,0.82)_100%)]" />
           <div className="absolute inset-x-[clamp(24px,3vw,36px)] bottom-[clamp(24px,3vw,36px)] text-ivory">
             <h3 className="font-serif text-[clamp(30px,3.4vw,42px)] font-medium tracking-[-0.02em]">
-              Culture indoor
+              Cactus &amp; succulentes
             </h3>
             <p className="mt-2.5 max-w-[42ch] text-[14.5px] leading-[1.6] text-[#DCE3DD]">
-              Éclairage, ventilation, chambres de culture, mesure et contrôle —
-              de la première tente à l&apos;installation complète.
+              Cactus, succulentes, euphorbes et agaves — des plantes
+              graphiques qui pardonnent les oublis.
             </p>
             <Link
-              href="/categorie/culture-indoor"
+              href="/categorie/cactus-succulentes"
               className="mt-[22px] inline-flex items-center gap-2.5 rounded-[10px] bg-copper px-5 py-[13px] text-xs font-bold tracking-[0.12em] text-white uppercase"
             >
               Découvrir <span>→</span>
@@ -50,28 +51,28 @@ export function UniversSection() {
           </div>
         </div>
 
-        <div className="relative min-h-[440px] min-w-0 flex-[1_1_280px] overflow-hidden rounded-[20px] bg-ink">
+        <div className="group relative min-h-[440px] min-w-0 flex-[1_1_280px] overflow-hidden rounded-[20px] bg-ink">
           <Image
-            src={cbdImg}
-            alt="Bocal ambré de fleurs CBD et flacon d'huile sur un comptoir en bois"
+            src={bonsaiImg}
+            alt="Bonsaï dans un pot en grès bleu-gris sur un comptoir en chêne clair"
             fill
             sizes="(min-width: 1024px) 400px, 100vw"
-            className="object-cover"
+            className={IMG_ZOOM}
           />
           <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(15,28,21,0.1)_30%,rgba(15,28,21,0.88)_100%)]" />
           <span className="absolute top-6 left-6 rounded-pill bg-ivory/16 px-3 py-[7px] text-[10.5px] font-semibold tracking-[0.14em] text-ivory uppercase backdrop-blur-sm">
-            Leaf District
+            Feuilles et épines
           </span>
           <div className="absolute inset-x-7 bottom-7 text-ivory">
             <h3 className="font-serif text-[32px] leading-[1.05] font-medium tracking-[-0.02em]">
-              CBD &amp; CBG
+              Bonsaï
             </h3>
             <p className="mt-2.5 text-sm leading-[1.55] text-[#DCE3DD]">
-              Sélection bretonne, fleurs, huiles et résines, conseillées en
-              boutique.
+              Arbres miniatures d&apos;intérieur et d&apos;extérieur, pots et
+              substrats.
             </p>
             <Link
-              href="/categorie/cbd-cbg"
+              href="/categorie/bonsai"
               className="mt-[18px] inline-flex gap-2 text-xs font-bold tracking-[0.12em] text-white uppercase"
             >
               Voir la gamme →
@@ -79,29 +80,28 @@ export function UniversSection() {
           </div>
         </div>
 
-        <div className="grid min-h-[300px] min-w-0 flex-[2_1_520px] grid-cols-[repeat(auto-fit,minmax(min(100%,240px),1fr))] overflow-hidden rounded-[20px] bg-[#E3E0D9]">
-          <div className="relative min-h-[260px]">
+        <div className="group grid min-h-[340px] min-w-0 flex-[2_1_520px] grid-cols-[repeat(auto-fit,minmax(min(100%,240px),1fr))] overflow-hidden rounded-[20px] bg-[#E3E0D9]">
+          <div className="relative min-h-[300px] overflow-hidden">
             <Image
-              src={outdoorImg}
-              alt="Comptoir garni de substrats et d'engrais, étagères de produits en arrière-plan"
+              src={plantesImg}
+              alt="Monstera dans un pot crème devant une baie vitrée, étagère blanche de plantes"
               fill
               sizes="(min-width: 1024px) 400px, 100vw"
-              className="object-cover"
+              className={IMG_ZOOM}
             />
           </div>
           <div className="flex flex-col justify-center gap-3 p-[clamp(26px,3vw,40px)]">
             <span className="text-[10.5px] font-semibold tracking-[0.18em] text-text-muted uppercase">
-              Au fil des saisons
+              Pour chaque pièce
             </span>
             <h3 className="font-serif text-[28px] leading-[1.1] font-medium tracking-[-0.02em] text-ink">
-              Outdoor &amp; hors-sol
+              Plantes d&apos;intérieur
             </h3>
             <p className="text-sm leading-[1.65] text-text-secondary">
-              Substrats, engrais, pots et additifs pour chaque méthode de
-              culture.
+              Feuillages, calathea, philodendron ou plantes increvables.
             </p>
             <Link
-              href="/categorie/outdoor"
+              href="/categorie/plantes-interieur"
               className="mt-2 self-start rounded-[10px] border border-ink px-[18px] py-2.5 text-[11.5px] font-bold tracking-[0.12em] text-ink uppercase"
             >
               Parcourir
@@ -109,22 +109,21 @@ export function UniversSection() {
           </div>
         </div>
 
-        <div className="relative min-h-[300px] min-w-0 flex-[1_1_280px] overflow-hidden rounded-[20px] bg-[#0F1A14]">
+        <div className="group relative min-h-[340px] min-w-0 flex-[1_1_280px] overflow-hidden rounded-[20px] bg-[#0F1A14]">
           <Image
-            src={vinylesImg}
-            alt="Bacs de vinyles colorés et étagère de figurines de collection"
+            src={potsImg}
+            alt="Pots en terre cuite empilés, arrosoir en cuivre et sécateur sur un comptoir en chêne"
             fill
             sizes="(min-width: 1024px) 400px, 100vw"
-            className="object-cover"
+            className={`${IMG_ZOOM} object-[50%_80%]`}
           />
           <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(10,14,12,0.78)_0%,rgba(10,14,12,0.1)_60%)]" />
           <div className="absolute inset-x-7 top-7 text-ivory">
             <h3 className="font-serif text-[28px] font-medium tracking-[-0.02em]">
-              Vinyles &amp; pop culture
+              Pots &amp; jardinage
             </h3>
             <p className="mt-2 text-sm leading-[1.55] text-[#DCE3DD]">
-              Arrivages réguliers, neuf et occasion. Figurines et objets de
-              collection.
+              Terre cuite, cache-pots, terreaux, sécateurs et arrosoirs.
             </p>
           </div>
         </div>

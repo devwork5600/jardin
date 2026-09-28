@@ -18,7 +18,7 @@ export async function generateMetadata(
   if (!product) return {};
 
   return {
-    title: `${product.name} — Jardin Indoor`,
+    title: `${product.name} — Feuilles et épines`,
     description: paragraphs(product.description)[0],
   };
 }

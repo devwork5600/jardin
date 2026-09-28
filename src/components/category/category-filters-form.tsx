@@ -143,13 +143,13 @@ export function CategoryFiltersForm({
         <div className="rounded-2xl bg-green-deep p-5 text-ivory">
           <div className="font-serif text-lg">Besoin d&apos;aide ?</div>
           <p className="mt-2 text-[13px] leading-[1.55] text-on-dark-secondary">
-            On vous aide à dimensionner votre installation.
+            On vous aide à choisir la bonne plante pour votre pièce.
           </p>
           <a
-            href="tel:0297499509"
+            href="tel:0199005656"
             className="mt-3.5 inline-block text-[13px] font-bold text-lime"
           >
-            02 97 49 95 09 →
+            01 99 00 56 56 →
           </a>
         </div>
       </aside>

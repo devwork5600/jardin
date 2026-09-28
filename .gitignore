@@ -47,3 +47,6 @@ next-env.d.ts
 /.claude/
 /.windsurf/
 /skills-lock.json
+
+# third-party product photos: personal demo only, never commit
+/public/products/

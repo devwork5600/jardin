@@ -10,6 +10,7 @@ import {
   type ConnexionFormSchemaType,
 } from "@/lib/validators/email-schemas";
 import { connexionHeroDataUri } from "@/assets/images/connexion-comptoir.base64";
+import { IMG_ZOOM } from "@/lib/image-zoom";
 
 // Where to go after signing in: ?next=/some/path, same-site paths only (a
 // "//host" or absolute URL would be an open redirect).
@@ -68,12 +69,12 @@ export default function ConnexionPage() {
 
   return (
     <section className="container-page grid min-h-screen content-center grid-cols-[repeat(auto-fit,minmax(min(100%,400px),1fr))] items-stretch gap-[clamp(32px,5vw,72px)] py-[clamp(32px,5vw,64px)] pb-[clamp(64px,8vw,112px)]">
-      <div className="relative min-h-[520px] min-w-0 overflow-hidden rounded-block bg-green-deep">
+      <div className="group relative min-h-[520px] min-w-0 overflow-hidden rounded-block bg-green-deep">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={connexionHeroDataUri}
-          alt="Comptoir Jardin Indoor : sac de commande e-drive, plant de basilic, produit en retrait"
-          className="absolute inset-0 h-full w-full object-cover"
+          alt="Comptoir en chêne clair de la boutique : sac de commande en papier kraft, une succulente et un petit cactus"
+          className={`absolute inset-0 h-full w-full ${IMG_ZOOM}`}
         />
         <div className="absolute inset-0 bg-linear-to-b from-green-deep/0 to-green-deep/90" />
         <div className="absolute right-8 bottom-8 left-8 text-on-dark">
@@ -190,8 +191,8 @@ export default function ConnexionPage() {
 
         <p className="mt-6 text-[12.5px] leading-relaxed text-text-muted">
           Un souci de connexion ? Appelez la boutique au{" "}
-          <a href="tel:0297499509" className="font-semibold text-ink">
-            02 97 49 95 09
+          <a href="tel:0199005656" className="font-semibold text-ink">
+            01 99 00 56 56
           </a>
           .
         </p>

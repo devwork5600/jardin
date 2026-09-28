@@ -8,9 +8,9 @@ import { SHOP_HOURS } from "@/lib/shop-hours";
 import { TOPIC_BY_QUERY } from "@/lib/validators/contact-schema";
 
 export const metadata: Metadata = {
-  title: "Contact — Jardin Indoor",
+  title: "Contact — Feuilles et épines",
   description:
-    "Une question, un projet d'installation ? Écrivez-nous ou passez à la boutique, à Vannes.",
+    "Une question, un projet végétal ? Écrivez-nous ou passez à la boutique, à Vannes.",
   alternates: { canonical: "/contact" },
 };
 
@@ -24,7 +24,7 @@ export default async function ContactPage(props: PageProps<"/contact">) {
         Nous <em>contacter</em>
       </h1>
       <p className="mt-4 max-w-[52ch] text-[15px] leading-[1.7] text-text-secondary">
-        Une question sur un produit, un projet d&apos;installation ? Écrivez-nous
+        Une question sur une plante, un projet végétal ? Écrivez-nous
         ou passez à la boutique : on vous conseille de vive voix.
       </p>
 
@@ -33,7 +33,7 @@ export default async function ContactPage(props: PageProps<"/contact">) {
           <div className="rounded-[20px] bg-green-deep p-[clamp(22px,3vw,32px)] text-ivory">
             <span className="eyebrow text-lime">La boutique</span>
             <h2 className="mt-3 font-serif text-[clamp(26px,3vw,32px)] leading-[1.15] font-normal">
-              36 avenue Gontran Bienvenu, 56000 Vannes
+              12 rue du Cactus, 56000 Vannes
             </h2>
             <ShopStatus />
             <ul className="mt-5 list-none p-0">
@@ -48,10 +48,10 @@ export default async function ContactPage(props: PageProps<"/contact">) {
               ))}
             </ul>
             <a
-              href="tel:0297499509"
+              href="tel:0199005656"
               className="mt-6 inline-block rounded-[10px] bg-copper px-6 py-[15px] text-sm font-semibold text-white"
             >
-              02 97 49 95 09
+              01 99 00 56 56
             </a>
           </div>
 

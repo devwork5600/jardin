@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import facadeImg from "@/assets/images/home/facade.jpeg";
+import { IMG_ZOOM } from "@/lib/image-zoom";
 import { SHOP_HOURS } from "@/lib/shop-hours";
 import { ShopStatus } from "./shop-status";
 
@@ -11,7 +12,7 @@ export function BoutiqueSection() {
         <div className="min-w-0">
           <span className="eyebrow">La boutique</span>
           <h2 className="mt-3 font-serif text-[clamp(32px,4vw,48px)] leading-[1.08] font-normal tracking-[-0.02em] text-ink">
-            36 avenue Gontran Bienvenu, <em>Vannes</em>
+            12 rue du Cactus, <em>Vannes</em>
           </h2>
           <ShopStatus />
           <ul className="mt-7">
@@ -29,10 +30,10 @@ export function BoutiqueSection() {
           </ul>
           <div className="mt-7 flex flex-wrap items-center gap-[22px]">
             <a
-              href="tel:0297499509"
+              href="tel:0199005656"
               className="rounded-[10px] bg-ink px-6 py-[15px] text-sm font-semibold text-ivory"
             >
-              02 97 49 95 09
+              01 99 00 56 56
             </a>
             <Link href="/contact" className="text-sm font-semibold text-ink">
               Nous écrire →
@@ -40,13 +41,13 @@ export function BoutiqueSection() {
           </div>
         </div>
 
-        <div className="relative aspect-[4/3.4] min-w-0 overflow-hidden rounded-[20px]">
+        <div className="group relative aspect-[4/3.4] min-w-0 overflow-hidden rounded-[20px]">
           <Image
             src={facadeImg}
-            alt="Façade verte de la boutique Jardin Indoor, rue pavée de Vannes"
+            alt="Façade verte de la boutique, rue pavée de Vannes, cactus et bonsaï devant la vitrine"
             fill
             sizes="(min-width: 1024px) 600px, 100vw"
-            className="object-cover"
+            className={IMG_ZOOM}
           />
         </div>
       </div>

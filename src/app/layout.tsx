@@ -1,4 +1,5 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
+import { preconnect } from "react-dom";
 import { Noto_Serif, Manrope } from "next/font/google";
 import { Providers } from "@/components/providers";
 import { SiteHeader } from "@/components/site-header";
@@ -18,12 +19,21 @@ const manrope = Manrope({
   weight: ["400", "500", "600", "700"],
 });
 
+// Same green as the PWA manifest: browser UI (Android address bar) takes it.
+export const viewport: Viewport = {
+  themeColor: "#1b3226",
+};
+
 export const metadata: Metadata = {
-  title: "Jardin Indoor",
+  title: "Feuilles et épines",
   description: "Jardinerie urbaine indépendante à Vannes — e-drive, retrait en boutique.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
+  // Product photos come from another domain: open the connection (DNS + TLS)
+  // while the page is still parsing, not when the first photo is requested.
+  preconnect("https://res.cloudinary.com");
+
   return (
     <html
       lang="fr"

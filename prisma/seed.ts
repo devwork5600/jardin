@@ -1,281 +1,189 @@
 import "dotenv/config";
-import type { ProductBadge } from "../src/generated/prisma/client";
 import { prisma } from "../src/lib/prisma";
+import { loadManifest, productImageUrls } from "./product-images";
+import {
+  BRAND_NAMES,
+  OWN_BRAND,
+  PRODUCT_SLUGS,
+  PRODUCTS,
+  SUBCATEGORIES,
+  SUB_CHARS,
+  SUB_CONSEIL,
+  TOP_CATEGORIES,
+  slugify,
+} from "./catalog-data";
 
-const CULTURE_INDOOR_DESCRIPTION =
-  "Éclairage, ventilation, chambres de culture et contrôle du climat. Plus de références encore en boutique — demandez-nous conseil.";
+// `npm run db:seed -- --reset` also removes the previous catalog (products
+// that were ordered are archived instead of deleted). Without it the seed
+// only adds/updates.
+const RESET = process.argv.includes("--reset");
 
-const TOP_CATEGORIES = [
-  { name: "Culture indoor", slug: "culture-indoor", description: CULTURE_INDOOR_DESCRIPTION },
-  {
-    name: "CBD & CBG",
-    slug: "cbd-cbg",
-    description:
-      "Sélection bretonne, fleurs, huiles et résines, conseillées en boutique.",
-  },
-  {
-    name: "Outdoor & hors-sol",
-    slug: "outdoor",
-    description:
-      "Substrats, engrais, pots et additifs pour chaque méthode de culture.",
-  },
-  {
-    name: "Vinyles & pop culture",
-    slug: "vinyles",
-    description:
-      "Arrivages réguliers, neuf et occasion. Figurines et objets de collection.",
-  },
-];
+async function resetCatalog() {
+  const keepProducts = new Set(PRODUCT_SLUGS);
+  const keepCategories = new Set([
+    ...TOP_CATEGORIES.map((c) => c.slug),
+    ...SUBCATEGORIES.map((c) => c.slug),
+  ]);
+  const keepBrands = new Set(BRAND_NAMES.map(slugify));
 
-const SUBCATEGORIES = [
-  { name: "Éclairage", slug: "eclairage" },
-  { name: "Chambres", slug: "chambres" },
-  { name: "Ventilation", slug: "ventilation" },
-  { name: "Contrôle", slug: "controle" },
-  { name: "Accessoires", slug: "accessoires" },
-];
+  const oldProducts = await prisma.product.findMany({
+    where: { slug: { notIn: [...keepProducts] } },
+    select: { id: true, slug: true },
+  });
+  for (const product of oldProducts) {
+    try {
+      await prisma.product.delete({ where: { id: product.id } });
+    } catch {
+      // A variant is referenced by an order: keep the row, hide it.
+      await prisma.product.update({
+        where: { id: product.id },
+        data: { status: "ARCHIVED" },
+      });
+      console.log(`archived (has orders): ${product.slug}`);
+    }
+  }
 
-// [subcategory slug, brand, name, price €, compare-at €, badge]
-const PRODUCTS: [string, string, string, number, number | null, ProductBadge | null][] = [
-  ["chambres", "Secret Jardin", "Chambre Hydro Shoot 80 × 80 × 160", 129, null, "BEST_SELLER"],
-  ["ventilation", "Winflex", "Extracteur Revolution Stealth 125 mm", 159, null, null],
-  ["ventilation", "Prima Klima", "Filtre à charbon 125 × 400", 69, null, null],
-  ["controle", "GrowControl", "Thermo-hygromètre digital min/max", 19.9, null, null],
-  ["eclairage", "Lumatek", "Ballast digital 600 W dimmable", 189, 219, null],
-  ["chambres", "Secret Jardin", "Chambre Dark Room 120 × 120 × 200", 249, null, null],
-  ["controle", "Bluelab", "Stylo pH Pen — mesure pH", 89, null, "ADVICE"],
-  ["ventilation", "Ruck", "Ventilateur à clip Ø 15 cm", 24.9, null, null],
-  ["accessoires", "Garden Highpro", "Kit poulies Easy Roll réglables", 12.5, null, null],
-  ["accessoires", "Secret Jardin", "Filet de palissage 80 × 80", 14.9, null, null],
-  ["eclairage", "Mars Hydro", "Panneau LED FC 3000 — 300 W", 399, null, "NEW"],
-];
+  const oldCategories = await prisma.category.findMany({
+    where: { slug: { notIn: [...keepCategories] } },
+    select: { id: true, slug: true, parentId: true },
+  });
+  // Children before parents so the self-relation never blocks a delete.
+  oldCategories.sort((a, b) => Number(b.parentId !== null) - Number(a.parentId !== null));
+  for (const category of oldCategories) {
+    try {
+      await prisma.category.delete({ where: { id: category.id } });
+    } catch {
+      console.log(`kept category (still has archived products): ${category.slug}`);
+    }
+  }
 
-// More of the same, so the category page has enough rows for infinite scroll
-// (a batch is 12): 14 + 27 = 41 products = 4 batches.
-const EXTRA_PRODUCTS: typeof PRODUCTS = [
-  ["eclairage", "Lumatek", "Ballast électronique 400 W", 119, null, null],
-  ["eclairage", "SunSystem", "Ampoule HPS 600 W", 29.9, 34.9, null],
-  ["eclairage", "SunSystem", "Ampoule CFL croissance 125 W", 24.9, null, null],
-  ["eclairage", "Mars Hydro", "Panneau LED SP 3000 — 300 W", 219, 259, null],
-  ["eclairage", "Lumatek", "Réflecteur Adjust-A-Wings 600", 79, null, null],
-  ["chambres", "Secret Jardin", "Chambre Dark Street 150 × 150 × 200", 329, null, null],
-  ["chambres", "Secret Jardin", "Chambre Hydro Shoot 60 × 60 × 158", 99, null, "BEST_SELLER"],
-  ["chambres", "Secret Jardin", "Chambre Dark Room 60 × 60 × 140", 119, null, null],
-  ["chambres", "Secret Jardin", "Barre de suspension renforcée", 18.9, null, null],
-  ["chambres", "Secret Jardin", "Kit d'étanchéité de chambre", 9.9, null, null],
-  ["ventilation", "Prima Klima", "Filtre à charbon 150 × 500", 89, null, null],
-  ["ventilation", "Prima Klima", "Régulateur de vitesse 4 A", 39, null, null],
-  ["ventilation", "Winflex", "Gaine alu isolée Ø 125 — 10 m", 34.9, null, null],
-  ["ventilation", "Winflex", "Extracteur Revolution Stealth 100 mm", 119, null, null],
-  ["ventilation", "Ruck", "Ventilateur de gaine 125 mm", 74, 89, null],
-  ["ventilation", "Ruck", "Ventilateur oscillant à pied", 49, null, null],
-  ["ventilation", "Prima Klima", "Collier de serrage Ø 125 (x2)", 5.9, null, null],
-  ["controle", "GrowControl", "Thermostat + hygrostat digital", 45, null, null],
-  ["controle", "Bluelab", "Sonde EC/température", 59, null, null],
-  ["controle", "Bluelab", "Solution d'étalonnage pH 7.0", 14.9, null, null],
-  ["controle", "GrowControl", "Programmateur digital 3500 W", 17.9, null, null],
-  ["controle", "GrowControl", "Sonde CO₂ NDIR", 189, null, "NEW"],
-  ["accessoires", "Garden Highpro", "Ciseaux de précision courbes", 18.9, null, "BEST_SELLER"],
-  ["accessoires", "Garden Highpro", "Pulvérisateur 2 L", 12.9, null, null],
-  ["accessoires", "Garden Highpro", "Gants nitrile (x100)", 9.9, null, null],
-  ["accessoires", "Garden Highpro", "Sac de séchage 60 cm", 24.9, null, null],
-  ["accessoires", "Garden Highpro", "Bac de rétention 60 × 60", 21.9, null, null],
-];
-
-const ALL_PRODUCTS = [...PRODUCTS, ...EXTRA_PRODUCTS];
-
-// Phase 3 created this brand by hand as "sun-system"; slugify("SunSystem")
-// would give "sunsystem" and silently create a duplicate brand.
-const BRAND_SLUG_OVERRIDES: Record<string, string> = { SunSystem: "sun-system" };
-
-function slugify(text: string) {
-  return text
-    .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "")
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)/g, "");
+  await prisma.brand.deleteMany({
+    where: { slug: { notIn: [...keepBrands] }, products: { none: {} } },
+  });
 }
 
 async function main() {
+  if (RESET) await resetCatalog();
+
   const topBySlug = new Map<string, string>();
   for (const [position, category] of TOP_CATEGORIES.entries()) {
     const row = await prisma.category.upsert({
       where: { slug: category.slug },
-      update: { name: category.name, description: category.description, position },
+      update: { name: category.name, description: category.description, position, parentId: null },
       create: { ...category, position },
     });
     topBySlug.set(category.slug, row.id);
   }
 
-  const cultureIndoorId = topBySlug.get("culture-indoor")!;
   const subBySlug = new Map<string, string>();
-  for (const [position, sub] of SUBCATEGORIES.entries()) {
+  const subPosition = new Map<string, number>();
+  for (const sub of SUBCATEGORIES) {
+    const position = subPosition.get(sub.parent) ?? 0;
+    subPosition.set(sub.parent, position + 1);
+    const parentId = topBySlug.get(sub.parent)!;
     const row = await prisma.category.upsert({
       where: { slug: sub.slug },
-      update: { name: sub.name, parentId: cultureIndoorId, position },
-      create: { ...sub, parentId: cultureIndoorId, position },
+      update: { name: sub.name, parentId, position },
+      create: { name: sub.name, slug: sub.slug, parentId, position },
     });
     subBySlug.set(sub.slug, row.id);
   }
 
   const brandIds = new Map<string, string>();
-  const brandNames = new Set(["SunSystem", "Secret Jardin", ...ALL_PRODUCTS.map((p) => p[1])]);
-  for (const name of brandNames) {
-    const slug = BRAND_SLUG_OVERRIDES[name] ?? slugify(name);
+  for (const name of BRAND_NAMES) {
+    const slug = slugify(name);
     const row = await prisma.brand.upsert({
       where: { slug },
-      update: {},
+      update: { name },
       create: { name, slug },
     });
     brandIds.set(name, row.id);
   }
 
-  // Products from the design mockup (no photos yet: cards render a placeholder).
-  for (const [subSlug, brand, name, price, compareAt, badge] of ALL_PRODUCTS) {
+  const introBySub = new Map(SUBCATEGORIES.map((sub) => [sub.slug, sub.intro]));
+
+  for (const { sub: subSlug, name, price, badge, description } of PRODUCTS) {
     const slug = slugify(name);
-    await prisma.product.upsert({
+    const brand = OWN_BRAND;
+    // One variant: the pot size is part of the product name (like the source).
+    const variant = {
+      label: "Standard",
+      position: 0,
+      priceCents: Math.round(price * 100),
+      compareAtCents: null,
+    };
+
+    const fields = {
+      name,
+      description: description || `${name}. ${introBySub.get(subSlug)} Disponible en boutique à Vannes, conseil sur place.`,
+      conseil: SUB_CONSEIL[subSlug] ?? null,
+      optionName: null,
+      badge,
+      status: "PUBLISHED" as const,
+      categoryId: subBySlug.get(subSlug)!,
+      brandId: brandIds.get(brand)!,
+    };
+
+    const product = await prisma.product.upsert({
       where: { slug },
-      update: { badge },
-      create: {
-        name,
-        slug,
-        description: `${name} — ${brand}. Disponible en boutique à Vannes, conseil sur place.`,
-        status: "PUBLISHED",
-        badge,
-        categoryId: subBySlug.get(subSlug)!,
-        brandId: brandIds.get(brand)!,
-        variants: {
-          create: [
-            {
-              sku: slug.toUpperCase().slice(0, 40),
-              label: "Standard",
-              priceCents: Math.round(price * 100),
-              compareAtCents: compareAt ? Math.round(compareAt * 100) : null,
-              stock: 8,
-            },
-          ],
-        },
-      },
+      update: fields,
+      create: { ...fields, slug },
     });
-  }
 
-  // Flagship product from the product-page mockup: 3 power variants, specs,
-  // and the shop's advice. The first paragraph doubles as the page summary.
-  const flagshipSlug = "panneau-led-ts-1000";
-  const flagshipFields = {
-    name: "Panneau LED TS 1000",
-    optionName: "Puissance",
-    description: [
-      "Spectre complet, silencieux et économe. Idéal pour une chambre de culture 60 × 60 à 80 × 80, de la croissance à la floraison.",
-      "Le TS 1000 reste l'un des panneaux les plus demandés en boutique : un rendement solide pour une consommation réelle de 150 W, sans ventilateur, donc parfaitement silencieux.",
-      "Son spectre complet couvre toutes les phases de culture. Le variateur intégré permet de doser l'intensité selon la hauteur et le stade des plantes.",
-    ].join("\n\n"),
-    conseil:
-      "Associez-le à un extracteur 100 mm et un filtre à charbon : c'est le trio qu'on recommande pour une première tente 80 × 80.",
-  };
-  const flagship = await prisma.product.upsert({
-    where: { slug: flagshipSlug },
-    update: flagshipFields,
-    create: {
-      ...flagshipFields,
-      slug: flagshipSlug,
-      status: "PUBLISHED",
-      categoryId: subBySlug.get("eclairage")!,
-      brandId: brandIds.get("Mars Hydro")!,
-    },
-  });
-  const flagshipVariants = [
-    { sku: "PANNEAU-LED-TS-1000-150-W", label: "150 W", detail: "60×60 à 80×80", priceCents: 14900, compareAtCents: 17900, position: 0 },
-    { sku: "PANNEAU-LED-TS-2000-300-W", label: "300 W", detail: "100×100", priceCents: 26900, compareAtCents: 30900, position: 1 },
-    { sku: "PANNEAU-LED-TS-3000-450-W", label: "450 W", detail: "120×120", priceCents: 36900, compareAtCents: null, position: 2 },
-  ];
-  for (const variant of flagshipVariants) {
+    const sku = `${slug}-1`.toUpperCase();
     await prisma.productVariant.upsert({
-      where: { sku: variant.sku },
+      where: { sku },
       update: { ...variant },
-      create: { ...variant, productId: flagship.id, stock: 8 },
+      create: { ...variant, sku, productId: product.id, stock: 8 },
     });
+    // Drop variants left over from an earlier catalog (e.g. -2 pot sizes).
+    await prisma.productVariant.deleteMany({
+      where: { productId: product.id, sku: { not: sku }, orderItems: { none: {} } },
+    });
+
+    const characteristics = SUB_CHARS[subSlug];
+    if (characteristics) {
+      await prisma.productCharacteristic.deleteMany({ where: { productId: product.id } });
+      await prisma.productCharacteristic.createMany({
+        data: characteristics.map(([label, value], position) => ({
+          productId: product.id,
+          label,
+          value,
+          position,
+        })),
+      });
+    }
   }
-  await prisma.productCharacteristic.deleteMany({ where: { productId: flagship.id } });
-  await prisma.productCharacteristic.createMany({
-    data: [
-      ["Puissance réelle", "150 W"],
-      ["Surface conseillée", "60×60 à 80×80 cm"],
-      ["Spectre", "Complet 3000–5000 K + IR"],
-      ["Variateur", "Intégré, 0–100 %"],
-      ["Refroidissement", "Passif, silencieux"],
-      ["Garantie", "3 ans"],
-    ].map(([label, value], position) => ({ productId: flagship.id, label, value, position })),
-  });
 
-  // Two products seeded earlier in Phase 3 (kept), re-homed under the tree.
-  await prisma.product.upsert({
-    where: { slug: "rampe-led-600w" },
-    update: {},
-    create: {
-      name: "Rampe LED 600W",
-      slug: "rampe-led-600w",
-      description:
-        "Rampe LED full spectrum pour la croissance et la floraison en culture indoor.",
-      conseil:
-        "Réglez la hauteur à 40cm du plant en croissance, 30cm en floraison.",
-      status: "PUBLISHED",
-      categoryId: subBySlug.get("eclairage")!,
-      brandId: brandIds.get("SunSystem")!,
-      characteristics: {
-        create: [
-          { label: "Puissance", value: "600W", position: 0 },
-          { label: "Spectre", value: "Full spectrum", position: 1 },
-        ],
-      },
-      variants: {
-        create: [
-          { sku: "LED-600W", label: "600W", priceCents: 24900, compareAtCents: 29900, stock: 12 },
-        ],
-      },
-    },
-  });
-
-  await prisma.product.upsert({
-    where: { slug: "tente-culture-secret-jardin" },
-    update: { optionName: "Dimensions" },
-    create: {
-      name: "Tente de culture",
-      slug: "tente-culture-secret-jardin",
-      description:
-        "Tente de culture opaque, toile déperlante, intérieur mylar réfléchissant.",
-      status: "PUBLISHED",
-      categoryId: subBySlug.get("chambres")!,
-      brandId: brandIds.get("Secret Jardin")!,
-      variants: {
-        create: [
-          { sku: "TENTE-60", label: "60x60x140cm", priceCents: 8900, stock: 5, position: 0 },
-          { sku: "TENTE-80", label: "80x80x160cm", priceCents: 11900, stock: 3, position: 1 },
-        ],
-      },
-    },
-  });
-
-  // Placeholder photos (placehold.co) for products that have none, so cards
-  // and the gallery can be judged before real pictures exist. Never touches a
-  // product that already has an image. Sizes/tones vary on purpose: portrait,
-  // square and landscape sources all have to survive object-cover.
+  // Photos: Cloudinary URLs (prisma/product-images.cloudinary.json) or local files win; otherwise placeholders, only for products
+  // that have no image at all (so a re-seed never wipes a manual upload).
   const TONES = ["DCE8E0", "E1EBDD", "EFE3DA", "D8DDD3", "E3E0D9"];
   const SIZES = [[800, 1000], [1000, 1000], [1200, 900], [800, 1000], [900, 1200]];
-  const withoutImages = await prisma.product.findMany({
-    where: { images: { none: {} } },
-    select: { id: true, name: true, slug: true },
+  const products = await prisma.product.findMany({
+    where: { slug: { in: PRODUCT_SLUGS } },
+    select: { id: true, name: true, slug: true, images: { select: { url: true } } },
     orderBy: { createdAt: "asc" },
   });
-  for (const [index, product] of withoutImages.entries()) {
-    const count = product.slug === flagshipSlug ? 4 : index % 5 === 0 ? 3 : 1;
+  const manifest = loadManifest();
+  let withRealImages = 0;
+  for (const [index, product] of products.entries()) {
+    const local = productImageUrls(product.slug, manifest);
+    if (local.length > 0) {
+      withRealImages++;
+      await prisma.productImage.deleteMany({ where: { productId: product.id } });
+      await prisma.productImage.createMany({
+        data: local.map((url, position) => ({ productId: product.id, position, url })),
+      });
+      continue;
+    }
+    if (product.images.length > 0) continue;
+
     const [width, height] = SIZES[index % SIZES.length];
     const tone = TONES[index % TONES.length];
+    const count = index % 5 === 0 ? 3 : 1;
     await prisma.productImage.createMany({
       data: Array.from({ length: count }, (_, position) => {
-        const view = count === 4 && position === 3 ? "En situation" : `Vue ${position + 1}`;
-        const label = encodeURIComponent(`${product.name}\n${view}`).replace(/%20/g, "+");
+        const label = encodeURIComponent(`${product.name}\nVue ${position + 1}`).replace(/%20/g, "+");
         return {
           productId: product.id,
           position,
@@ -284,6 +192,7 @@ async function main() {
       }),
     });
   }
+  console.log(`${products.length} products, ${withRealImages} with real photos.`);
 
   await prisma.loyaltyTier.upsert({
     where: { name: "Sève" },

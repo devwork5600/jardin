@@ -9,7 +9,7 @@ import {
 import { LEGAL } from "@/lib/legal";
 
 export const metadata: Metadata = {
-  title: "Mentions légales — Jardin Indoor",
+  title: "Mentions légales — Feuilles et épines",
   alternates: { canonical: "/mentions-legales" },
 };
 
@@ -17,9 +17,9 @@ export default function MentionsLegalesPage() {
   return (
     <LegalPage title="Mentions légales">
       <DemoNotice>
-        {`Jardin Indoor est le nom d’une boutique indépendante réelle, installée à Vannes. Ce site en est une refonte de démonstration, réalisée à titre de portfolio : ce n’est pas le site officiel de la boutique (`}
+        {`Feuilles et épines est une boutique fictive, imaginée à titre de portfolio. Ce site de démonstration s’inspire d’une jardinerie indépendante réelle de Vannes, Jardin Indoor, avec qui il n’a aucun lien : ce n’est pas son site officiel (`}
         <LegalLink href={LEGAL.officialSiteUrl}>{LEGAL.officialSiteLabel}</LegalLink>
-        {`). Les produits, prix, stocks, promotions, remises de fidélité et commandes présentés sont fictifs : aucune vente réelle n’est conclue ici et aucune commande passée sur ce site n’est traitée par la boutique. Son nom, son adresse et son numéro de téléphone sont reproduits à titre d’illustration ; pour toute demande réelle, contactez la boutique par ses propres canaux. Les visuels sont des illustrations (images générées par intelligence artificielle ou images d’espace réservé).`}
+        {`). Les produits, prix, stocks, promotions, remises de fidélité et commandes présentés sont fictifs : aucune vente réelle n’est conclue ici et aucune commande passée sur ce site n’est traitée par la boutique. L’adresse et le numéro de téléphone affichés sont fictifs. Les visuels de mise en page sont des illustrations (images générées par intelligence artificielle ou images d’espace réservé). Les noms, descriptions, prix et photos des produits proviennent d’un site marchand tiers et sont reproduits à titre d’illustration, dans le cadre d’un projet personnel et non commercial ; ils restent la propriété de leurs titulaires.`}
       </DemoNotice>
 
       <LegalSection title="Éditeur du site">

@@ -15,7 +15,7 @@ export async function generateMetadata(
   if (!category) return {};
 
   return {
-    title: `${category.name} — Jardin Indoor`,
+    title: `${category.name} — Feuilles et épines`,
     description: category.description ?? undefined,
   };
 }

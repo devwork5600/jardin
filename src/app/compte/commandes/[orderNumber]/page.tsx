@@ -8,7 +8,7 @@ import { formatOrderDate } from "@/lib/format";
 import { getUserOrder } from "@/lib/order-queries";
 import { requireSession } from "@/lib/session";
 
-export const metadata: Metadata = { title: "Ma commande — Jardin Indoor" };
+export const metadata: Metadata = { title: "Ma commande — Feuilles et épines" };
 
 export default async function OrderDetailPage(
   props: PageProps<"/compte/commandes/[orderNumber]">,

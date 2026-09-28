@@ -11,7 +11,7 @@ export function EmptyCart() {
         boutique à Vannes.
       </p>
       <Link
-        href="/categorie/culture-indoor"
+        href="/categorie/cactus-succulentes"
         className="mt-7 inline-block rounded-[10px] bg-ink px-6 py-[15px] text-sm font-semibold text-ivory"
       >
         Découvrir la boutique

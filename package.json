@@ -12,7 +12,9 @@
     "lint": "eslint",
     "typecheck": "next typegen && tsc --noEmit",
     "postinstall": "prisma generate",
-    "db:seed": "tsx prisma/seed.ts"
+    "db:seed": "tsx prisma/seed.ts",
+    "images:init": "tsx scripts/download-images.ts --init",
+    "images:download": "tsx scripts/download-images.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.9.1",

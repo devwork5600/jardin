@@ -3,7 +3,7 @@ import { FR_PHONE } from "@/lib/validators/phone";
 
 export const CONTACT_TOPICS = [
   { value: "QUESTION", label: "Question sur un produit" },
-  { value: "QUOTE", label: "Demande de devis" },
+  { value: "QUOTE", label: "Projet sur mesure" },
   { value: "ORDER", label: "Ma commande" },
   { value: "OTHER", label: "Autre" },
 ] as const;
@@ -28,9 +28,9 @@ export const ContactFormSchema = z.object({
 
 export type ContactFormValues = z.infer<typeof ContactFormSchema>;
 
-// ?sujet=devis on /contact preselects the topic (used by the home page CTA).
+// ?sujet=projet on /contact preselects the topic (used by the home page CTA).
 export const TOPIC_BY_QUERY: Record<string, ContactFormValues["topic"]> = {
-  devis: "QUOTE",
+  projet: "QUOTE",
   commande: "ORDER",
   produit: "QUESTION",
 };
