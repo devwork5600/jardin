@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { FavoriteButton } from "@/components/favorites/favorite-button";
 import { useCartStore } from "@/lib/cart";
 import { formatPrice } from "@/lib/format";
+import { imageUrl } from "@/lib/image-url";
 import {
   makeAddToCartSchema,
   type AddToCartValues,
@@ -60,7 +61,7 @@ export function ProductDetail({
       ? Math.round((1 - variant.priceCents / variant.compareAtCents) * 100)
       : null;
 
-  // Design: "Panneau LED TS 1000 *150 W*" — with several variants the italic
+  // Design: "Monstera deliciosa *Pot Ø 12 cm*" — with several variants the italic
   // accent is the selected one; otherwise whatever follows a " — " in the name.
   const [title, ...titleRest] = name.split(" — ");
   const accent =
@@ -84,8 +85,11 @@ export function ProductDetail({
           {images.length > 0 ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
-              src={images[activeImage]?.url}
+              src={imageUrl(images[activeImage]?.url ?? "", 1000)}
               alt={name}
+              // The biggest thing on the page: fetch it before anything else.
+              fetchPriority="high"
+              decoding="async"
               className="absolute inset-0 h-full w-full object-cover"
             />
           ) : (
@@ -113,7 +117,7 @@ export function ProductDetail({
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src={image.url}
+                  src={imageUrl(image.url, 260)}
                   alt=""
                   className="absolute inset-0 h-full w-full object-cover"
                 />
@@ -251,7 +255,7 @@ export function ProductDetail({
             ) : (
               <span>
                 <strong className="font-semibold">Actuellement indisponible</strong>{" "}
-                — appelez la boutique au 02 97 49 95 09
+                — appelez la boutique au 01 99 00 56 56
               </span>
             )}
           </div>

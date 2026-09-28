@@ -14,7 +14,8 @@
     "postinstall": "prisma generate",
     "db:seed": "tsx prisma/seed.ts",
     "images:init": "tsx scripts/download-images.ts --init",
-    "images:download": "tsx scripts/download-images.ts"
+    "images:download": "tsx scripts/download-images.ts",
+    "images:upload": "tsx scripts/upload-images.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.9.1",
@@ -35,6 +36,7 @@
     "@types/node": "^24.13.6",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "cloudinary": "^2.11.0",
     "dotenv": "^18.0.3",
     "eslint": "^9",
     "eslint-config-next": "16.3.6",

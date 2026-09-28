@@ -88,8 +88,8 @@ export function CategoryProductGrid({
         aria-busy={isFetchingNextPage}
         className="mt-7 grid grid-cols-[repeat(auto-fill,minmax(min(100%,230px),1fr))] gap-x-[22px] gap-y-8"
       >
-        {products.map((product) => (
-          <ProductCard key={product.id} product={product} />
+        {products.map((product, index) => (
+          <ProductCard key={product.id} product={product} priority={index < 4} />
         ))}
         {isFetchingNextPage &&
           Array.from({ length: skeletonCount }, (_, i) => (

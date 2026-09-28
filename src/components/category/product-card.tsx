@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { FavoriteButton } from "@/components/favorites/favorite-button";
+import { imageUrl } from "@/lib/image-url";
 import type { CardBadge, ProductCardData } from "@/lib/catalog";
 import { formatPrice } from "@/lib/format";
 
@@ -13,9 +14,13 @@ const BADGES: Record<CardBadge, { label: string; className: string }> = {
 export function ProductCard({
   product,
   favorited,
+  priority = false,
 }: {
   product: ProductCardData;
   favorited?: boolean;
+  // The first cards of the page: what the eye lands on. Only a few, so they
+  // are fetched first instead of all competing with each other.
+  priority?: boolean;
 }) {
   const href = `/produit/${product.slug}`;
   const badge = product.badge ? BADGES[product.badge] : null;
@@ -30,9 +35,12 @@ export function ProductCard({
           {product.imageUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
-              src={product.imageUrl}
+              src={imageUrl(product.imageUrl, 640)}
               alt={product.name}
-              loading="lazy"
+              // No loading="lazy": a batch is only requested when the visitor is
+              // about to reach it, so its photos should start right away.
+              fetchPriority={priority ? "high" : undefined}
+              decoding="async"
               className="absolute inset-0 h-full w-full object-cover"
             />
           ) : (
