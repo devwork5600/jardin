@@ -18,7 +18,7 @@ export async function generateMetadata(
   if (!product) return {};
 
   return {
-    title: `${product.name} — Jardin Indoor`,
+    title: `${product.name} — Feuilles et épines`,
     description: paragraphs(product.description)[0],
   };
 }
@@ -64,6 +64,7 @@ export default async function ProductPage(props: PageProps<"/produit/[slug]">) {
         </nav>
 
         <ProductDetail
+          productId={product.id}
           name={product.name}
           eyebrow={[brand?.name, category.name].filter(Boolean).join(" · ")}
           summary={summary}

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { formatPrice } from "@/lib/format";
+import { imageUrl } from "@/lib/image-url";
 import type { PricedLine } from "@/lib/cart-pricing";
 import type { CheckoutFormValues } from "@/lib/validators/checkout-schema";
 import { CartTotals } from "./cart-totals";
@@ -44,7 +45,7 @@ function RecapLine({ line }: { line: PricedLine }) {
         {line.imageUrl && (
           // eslint-disable-next-line @next/next/no-img-element
           <img
-            src={line.imageUrl}
+            src={imageUrl(line.imageUrl, 120)}
             alt=""
             className="absolute inset-0 h-full w-full object-cover"
           />
@@ -94,7 +95,7 @@ export function CheckoutRecap({
 }: Props) {
   const cart = pricing.data;
   const cardSelected = method === "CARD";
-  const disabled = !cart?.canOrder || submitting || cardSelected;
+  const disabled = !cart?.canOrder || submitting;
 
   return (
     <aside className="min-w-0 flex-[1_1_340px] rounded-[20px] bg-green-deep p-[clamp(22px,3vw,32px)] text-ivory min-[900px]:sticky min-[900px]:top-24">

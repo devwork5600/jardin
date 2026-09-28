@@ -8,7 +8,7 @@ import {
 import { SHOP_HOURS } from "@/lib/shop-hours";
 
 export const metadata: Metadata = {
-  title: "Conditions générales de vente — Jardin Indoor",
+  title: "Conditions générales de vente — Feuilles et épines",
   alternates: { canonical: "/cgv" },
 };
 
@@ -45,7 +45,7 @@ export default function CgvPage() {
 
       <LegalSection title="5. Retrait en boutique">
         <p>
-          {`Le retrait se fait à la boutique, 36 avenue Gontran Bienvenu, 56000 Vannes, le jour choisi lors de la commande, au plus tôt le lendemain. Horaires d’ouverture :`}
+          {`Le retrait se fait à la boutique, 12 rue du Cactus, 56000 Vannes, le jour choisi lors de la commande, au plus tôt le lendemain. Horaires d’ouverture :`}
         </p>
         <ul className="ml-5 flex list-disc flex-col gap-1">
           {SHOP_HOURS.map((hours) => (
@@ -58,7 +58,7 @@ export default function CgvPage() {
 
       <LegalSection title="6. Paiement">
         <p>
-          {`Le paiement s’effectue au retrait, par carte bancaire ou en espèces. Le paiement par carte en ligne n’est pas encore disponible. Les chèques ne sont pas acceptés.`}
+          {`Le paiement s’effectue soit en ligne par carte bancaire au moment de la commande, soit au retrait, par carte bancaire ou en espèces. Le paiement en ligne est traité par le prestataire Stripe sur sa propre page sécurisée : la boutique ne reçoit ni ne conserve les numéros de carte. La commande n’est confirmée qu’une fois le paiement validé ; si le paiement n’aboutit pas ou est abandonné, la commande est annulée et aucun montant n’est débité. Les chèques ne sont pas acceptés. Sur ce site de démonstration, le paiement en ligne fonctionne uniquement avec des cartes de test : aucun débit réel n’a lieu.`}
         </p>
       </LegalSection>
 

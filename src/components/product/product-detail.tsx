@@ -3,8 +3,10 @@
 import { useMemo, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { FavoriteButton } from "@/components/favorites/favorite-button";
 import { useCartStore } from "@/lib/cart";
 import { formatPrice } from "@/lib/format";
+import { imageUrl } from "@/lib/image-url";
 import {
   makeAddToCartSchema,
   type AddToCartValues,
@@ -20,6 +22,7 @@ type Variant = {
 };
 
 type Props = {
+  productId: string;
   name: string;
   eyebrow: string;
   summary: string;
@@ -31,6 +34,7 @@ type Props = {
 // Gallery and purchase panel live in one client component: the promo badge on
 // the main image depends on the variant picked in the panel.
 export function ProductDetail({
+  productId,
   name,
   eyebrow,
   summary,
@@ -57,7 +61,7 @@ export function ProductDetail({
       ? Math.round((1 - variant.priceCents / variant.compareAtCents) * 100)
       : null;
 
-  // Design: "Panneau LED TS 1000 *150 W*" — with several variants the italic
+  // Design: "Monstera deliciosa *Pot Ø 12 cm*" — with several variants the italic
   // accent is the selected one; otherwise whatever follows a " — " in the name.
   const [title, ...titleRest] = name.split(" — ");
   const accent =
@@ -81,8 +85,11 @@ export function ProductDetail({
           {images.length > 0 ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
-              src={images[activeImage]?.url}
+              src={imageUrl(images[activeImage]?.url ?? "", 1000)}
               alt={name}
+              // The biggest thing on the page: fetch it before anything else.
+              fetchPriority="high"
+              decoding="async"
               className="absolute inset-0 h-full w-full object-cover"
             />
           ) : (
@@ -110,7 +117,7 @@ export function ProductDetail({
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src={image.url}
+                  src={imageUrl(image.url, 260)}
                   alt=""
                   className="absolute inset-0 h-full w-full object-cover"
                 />
@@ -125,9 +132,16 @@ export function ProductDetail({
         className="flex min-w-0 flex-col gap-6 min-[900px]:sticky min-[900px]:top-24"
       >
         <div>
-          <span className="text-[11px] font-bold tracking-[0.2em] text-copper uppercase">
-            {eyebrow}
-          </span>
+          <div className="flex items-center justify-between gap-3">
+            <span className="text-[11px] font-bold tracking-[0.2em] text-copper uppercase">
+              {eyebrow}
+            </span>
+            <FavoriteButton
+              productId={productId}
+              productName={name}
+              className="border border-border"
+            />
+          </div>
           <h1 className="mt-3 font-serif text-[clamp(32px,4vw,48px)] leading-[1.08] font-normal tracking-[-0.02em] text-ink">
             {title}
             {accent && <em> {accent}</em>}
@@ -241,7 +255,7 @@ export function ProductDetail({
             ) : (
               <span>
                 <strong className="font-semibold">Actuellement indisponible</strong>{" "}
-                — appelez la boutique au 02 97 49 95 09
+                — appelez la boutique au 01 99 00 56 56
               </span>
             )}
           </div>

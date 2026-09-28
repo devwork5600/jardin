@@ -131,6 +131,9 @@ model Promotion {
 }
 
 enum OrderStatus {
+  // Card orders wait here until Stripe confirms the payment (stock is already
+  // reserved). Pay-at-pickup orders start at EN_PREPARATION.
+  EN_ATTENTE_PAIEMENT
   EN_PREPARATION
   PRETE_AU_RETRAIT
   RETIREE
@@ -158,6 +161,14 @@ model Order {
   promotionId            String?
   promotionDiscountCents Int           @default(0)
   totalCents             Int
+  // Card payments: the Checkout Session that pays for this order, and when the
+  // payment was confirmed by the webhook.
+  stripeSessionId        String?       @unique
+  stripePaymentIntentId  String?
+  paidAt                 DateTime?
+  // Set once the money went back to the customer (order cancelled after a card
+  // payment). Null + cancelled + paidAt = a refund is still owed.
+  refundedAt             DateTime?
   createdAt              DateTime      @default(now())
   updatedAt              DateTime      @updatedAt
 
@@ -216,6 +227,7 @@ model User {
   updatedAt       DateTime   @updatedAt
   role            String?    @default("CUSTOMER")
   totalSpentCents Int?       @default(0)
+  phone           String?
   sessions        Session[]
   accounts        Account[]
   orders          Order[]

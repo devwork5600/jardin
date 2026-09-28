@@ -12,7 +12,11 @@
     "lint": "eslint",
     "typecheck": "next typegen && tsc --noEmit",
     "postinstall": "prisma generate",
-    "db:seed": "tsx prisma/seed.ts"
+    "db:seed": "tsx prisma/seed.ts",
+    "images:init": "tsx scripts/download-images.ts --init",
+    "images:download": "tsx scripts/download-images.ts",
+    "email:dev": "email dev --dir src/emails --port 3030",
+    "images:upload": "tsx scripts/upload-images.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.9.1",
@@ -23,16 +27,20 @@
     "next": "16.3.6",
     "react": "19.2.8",
     "react-dom": "19.2.8",
+    "react-email": "^6.11.0",
     "react-hook-form": "^7.88.0",
     "resend": "^6.28.1",
+    "stripe": "^22.6.2",
     "zod": "^4.6.5",
     "zustand": "^5.0.15"
   },
   "devDependencies": {
+    "@react-email/ui": "^6.11.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^24.13.6",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "cloudinary": "^2.11.0",
     "dotenv": "^18.0.3",
     "eslint": "^9",
     "eslint-config-next": "16.3.6",

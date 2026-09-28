@@ -1,13 +1,14 @@
 import Link from "next/link";
+import { LogoMark } from "@/components/logo-mark";
 
 const FOOTER_COLUMNS = [
   {
     title: "Boutique",
     links: [
-      { label: "Culture indoor", href: "/categorie/culture-indoor" },
-      { label: "Outdoor & hors-sol", href: "/categorie/outdoor" },
-      { label: "CBD / CBG", href: "/categorie/cbd-cbg" },
-      { label: "Vinyles & pop culture", href: "/categorie/vinyles" },
+      { label: "Cactus & succulentes", href: "/categorie/cactus-succulentes" },
+      { label: "Bonsaï", href: "/categorie/bonsai" },
+      { label: "Plantes d'intérieur", href: "/categorie/plantes-interieur" },
+      { label: "Pots & jardinage", href: "/categorie/pots-jardinage" },
     ],
   },
   {
@@ -34,9 +35,12 @@ export function SiteFooter() {
     <footer className="bg-footer-bg text-footer-text">
       <div className="container-page grid grid-cols-[repeat(auto-fit,minmax(min(100%,180px),1fr))] gap-7 pt-[clamp(40px,5vw,64px)]">
         <div>
-          <div className="font-serif text-2xl text-ivory">Jardin Indoor</div>
+          <div className="flex items-center gap-3 font-serif text-2xl text-ivory">
+            <LogoMark className="h-8 w-[23px] shrink-0 text-lime" />
+            Feuilles et épines
+          </div>
           <p className="mt-2.5 max-w-[28ch] text-[13px] leading-relaxed text-footer-label">
-            36 av. Gontran Bienvenu, 56000 Vannes · 02 97 49 95 09
+            12 rue du Cactus, 56000 Vannes · 01 99 00 56 56
           </p>
         </div>
 
@@ -62,7 +66,7 @@ export function SiteFooter() {
       </div>
 
       <div className="container-page mt-10 flex flex-wrap items-center justify-between gap-x-5 gap-y-2 border-t border-[rgba(231,239,234,0.14)] pt-[18px] pb-7 font-serif text-[12.5px] text-footer-label italic">
-        <span>© 2026 Jardin Indoor — Indépendant depuis 2011.</span>
+        <span>© 2026 Feuilles et épines — Boutique indépendante à Vannes.</span>
         <span>Vente interdite aux mineurs</span>
       </div>
     </footer>

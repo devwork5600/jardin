@@ -3,7 +3,7 @@ import { CartView } from "@/components/checkout/cart-view";
 import { CheckoutStepper } from "@/components/checkout/checkout-stepper";
 
 export const metadata: Metadata = {
-  title: "Mon panier — Jardin Indoor",
+  title: "Mon panier — Feuilles et épines",
 };
 
 export default function PanierPage() {

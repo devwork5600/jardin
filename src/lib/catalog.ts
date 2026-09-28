@@ -154,3 +154,17 @@ export async function getRelatedProducts(product: {
     .slice(0, 4)
     .map(toCategoryProduct);
 }
+
+// Published products the customer favourited, most recently added first.
+export async function getFavoriteProducts(userId: string): Promise<CategoryProduct[]> {
+  const favorites = await prisma.favorite.findMany({
+    where: { userId, product: { status: "PUBLISHED" } },
+    orderBy: { createdAt: "desc" },
+    include: { product: { include: cardInclude } },
+  });
+
+  return favorites
+    .map((favorite) => favorite.product)
+    .filter((product) => product.variants.length > 0)
+    .map(toCategoryProduct);
+}

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useCartStore } from "@/lib/cart";
 import { formatPrice } from "@/lib/format";
+import { imageUrl } from "@/lib/image-url";
 import type { PricedLine } from "@/lib/cart-pricing";
 
 const STEP_BUTTON =
@@ -19,7 +20,7 @@ export function CartLine({ line }: { line: PricedLine }) {
       {line.imageUrl && (
         // eslint-disable-next-line @next/next/no-img-element
         <img
-          src={line.imageUrl}
+          src={imageUrl(line.imageUrl, 170)}
           alt=""
           className="absolute inset-0 h-full w-full object-cover"
         />

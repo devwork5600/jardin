@@ -58,7 +58,7 @@ export function CartView() {
             : items.map((item) => <SkeletonLine key={item.variantId} />)}
         </ul>
         <Link
-          href="/categorie/culture-indoor"
+          href="/categorie/cactus-succulentes"
           className="mt-5 inline-block text-sm font-semibold text-ink"
         >
           ← Continuer mes achats

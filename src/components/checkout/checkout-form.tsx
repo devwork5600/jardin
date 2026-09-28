@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -17,6 +18,11 @@ import { usePricedCart } from "./use-priced-cart";
 
 type Props = {
   signedIn: boolean;
+  // Card payment needs Stripe configured; in test mode we tell the customer.
+  cardEnabled: boolean;
+  testMode: boolean;
+  // Came back from Stripe with the "back" link: the order was given up.
+  canceled: boolean;
   defaultValues: CheckoutFormValues;
   pickupDays: PickupDay[];
 };
@@ -28,8 +34,8 @@ const PAYMENT_METHODS = [
   {
     value: "CARD",
     title: "Carte bancaire en ligne",
-    text: "Paiement sécurisé, votre commande est prête à votre arrivée.",
-    available: false,
+    text: "Paiement sécurisé par Stripe, votre commande est prête à votre arrivée.",
+    available: true,
   },
   {
     value: "ON_PICKUP",
@@ -56,8 +62,17 @@ function CheckoutSkeleton() {
   );
 }
 
-export function CheckoutForm({ signedIn, defaultValues, pickupDays }: Props) {
+export function CheckoutForm({
+  signedIn,
+  cardEnabled,
+  testMode,
+  canceled,
+  defaultValues,
+  pickupDays,
+}: Props) {
   const router = useRouter();
+  // Between "Stripe said go" and the browser actually leaving: keep the button busy.
+  const [redirecting, setRedirecting] = useState(false);
   const hydrated = useCartHydrated();
   const items = useCartStore((state) => state.items);
   const pricing = usePricedCart();
@@ -81,6 +96,11 @@ export function CheckoutForm({ signedIn, defaultValues, pickupDays }: Props) {
       setError("root", { message: result.error });
       return;
     }
+    if ("redirectUrl" in result) {
+      setRedirecting(true);
+      window.location.assign(result.redirectUrl);
+      return;
+    }
     router.push(`/paiement/confirmation/${result.orderNumber}`);
   };
 
@@ -97,6 +117,16 @@ export function CheckoutForm({ signedIn, defaultValues, pickupDays }: Props) {
       className="mt-10 flex flex-wrap items-start gap-8"
     >
       <div className="flex min-w-0 flex-[1_1_560px] flex-col gap-[22px]">
+        {canceled && (
+          <p
+            role="status"
+            className="rounded-[14px] border border-border bg-ivory-alt px-[18px] py-3.5 text-[14px] leading-[1.5] text-text-secondary"
+          >
+            Paiement annulé, aucun montant n&apos;a été débité. Votre panier est
+            conservé : vous pouvez réessayer ou choisir un autre mode de
+            paiement.
+          </p>
+        )}
         <section className={CARD}>
           <h2 className={CARD_TITLE}>Coordonnées</h2>
           <div className="mt-5 grid grid-cols-[repeat(auto-fit,minmax(min(100%,220px),1fr))] gap-x-4">
@@ -138,7 +168,7 @@ export function CheckoutForm({ signedIn, defaultValues, pickupDays }: Props) {
           <div className="flex flex-wrap items-baseline justify-between gap-2">
             <h2 className={CARD_TITLE}>Retrait en boutique</h2>
             <span className="text-[12.5px] text-text-tertiary">
-              36 av. Gontran Bienvenu, Vannes
+              12 rue du Cactus, Vannes
             </span>
           </div>
           <Controller
@@ -191,7 +221,11 @@ export function CheckoutForm({ signedIn, defaultValues, pickupDays }: Props) {
                 aria-label="Mode de paiement"
                 className="mt-5 flex flex-col gap-2.5"
               >
-                {PAYMENT_METHODS.map((method) => {
+                {PAYMENT_METHODS.map((baseMethod) => {
+                  const method = {
+                    ...baseMethod,
+                    available: baseMethod.value === "ON_PICKUP" || cardEnabled,
+                  };
                   const active = field.value === method.value;
                   return (
                     <button
@@ -224,6 +258,13 @@ export function CheckoutForm({ signedIn, defaultValues, pickupDays }: Props) {
                         <span className="mt-1 block text-[13px] leading-[1.5] text-text-tertiary">
                           {method.text}
                         </span>
+                        {method.value === "CARD" && method.available && testMode && (
+                          <span className="mt-2 block rounded-[8px] bg-ivory-alt px-2.5 py-1.5 text-[12px] leading-[1.5] text-text-secondary">
+                            Mode test : utilisez la carte 4242 4242 4242 4242,
+                            une date future et un code au hasard. Aucun
+                            débit réel.
+                          </span>
+                        )}
                       </span>
                     </button>
                   );
@@ -241,7 +282,7 @@ export function CheckoutForm({ signedIn, defaultValues, pickupDays }: Props) {
         pricing={pricing}
         signedIn={signedIn}
         method={paymentMethod}
-        submitting={isSubmitting}
+        submitting={isSubmitting || redirecting}
         error={errors.root?.message}
       />
     </form>

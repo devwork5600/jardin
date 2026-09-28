@@ -1,5 +1,5 @@
 import { BoutiqueSection } from "@/components/home/boutique-section";
-import { DevisBannerSection } from "@/components/home/devis-banner-section";
+import { ProjectBannerSection } from "@/components/home/project-banner-section";
 import { EdriveSection } from "@/components/home/edrive-section";
 import { HeroSection } from "@/components/home/hero-section";
 import { PillarsSection } from "@/components/home/pillars-section";
@@ -13,7 +13,7 @@ export default function Home() {
       <UniversSection />
       <EdriveSection />
       <BoutiqueSection />
-      <DevisBannerSection />
+      <ProjectBannerSection />
     </>
   );
 }
