@@ -24,7 +24,7 @@
     "@prisma/client": "^7.10.0",
     "@tanstack/react-query": "^5.103.2",
     "better-auth": "^1.7.5",
-    "next": "16.3.6",
+    "next": "16.4.3",
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "react-email": "^6.11.0",
@@ -35,7 +35,7 @@
     "zustand": "^5.0.15"
   },
   "devDependencies": {
-    "@react-email/ui": "^6.11.0",
+    "@react-email/ui": "^6.11.3",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^24.13.6",
     "@types/react": "^19",
@@ -44,7 +44,7 @@
     "dotenv": "^18.0.3",
     "eslint": "^9",
     "eslint-config-next": "16.3.6",
-    "prisma": "^7.10.0",
+    "prisma": "^7.10.1",
     "tailwindcss": "^4",
     "tsx": "^4.23.15",
     "typescript": "^5"
